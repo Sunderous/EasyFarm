@@ -77,12 +77,12 @@ namespace EasyFarm.States
            //context.API.Navigator.FaceHeading(context.Target.Position, false);
         }
 
-        //public override void Exit(IGameContext context)
-        //{
-        //    _lastTargetHpp = 100;
-        //    _hppCheck.Stop();
-        //    _hppCheck.Elapsed -= (sender, e) => HppCheck_Tick(sender, e, context);
-        //}
+        // Need to make sure if claim gets snaked after we /follow the target,
+        // that we cancel follow when we un-engage or we won't move.
+        public override void Exit(IGameContext context)
+        {
+            context.API.Navigator.CancelFollow();
+        }
 
         //private void HppCheck_Tick(object sender, EventArgs e, IGameContext context)
         //{

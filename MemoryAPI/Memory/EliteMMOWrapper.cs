@@ -87,6 +87,11 @@ namespace MemoryAPI.Memory
                 FaceHeading(GetEntityPosition((int)player.TargetID), false);
             }
 
+            public void CancelFollow()
+            {
+                _api.AutoFollow.IsAutoFollowing = false;
+            }
+
             public void FaceHeading(Position position, bool isRunning)
             {
                 var player = _api.Entity.GetLocalPlayer();
