@@ -97,7 +97,7 @@ namespace EasyFarm.Classes
 
                 if (isInRange)
                 {
-                    _fface.Navigator.FaceHeading(target.Position, false);
+                    //_fface.Navigator.FaceHeading(target.Position, false);
                     _fface.Navigator.Reset();
                     TimeWaiter.Pause(100);
 
@@ -144,7 +144,7 @@ namespace EasyFarm.Classes
                     else
                     {
                         context.API.Navigator.GotoNPC(target.Id, target.Position, false);
-                        context.API.Navigator.FaceHeading(target.Position, false);
+                        //context.API.Navigator.FaceHeading(target.Position, false);
                     }
 
                 }
@@ -195,7 +195,7 @@ namespace EasyFarm.Classes
 
             while (stopwatch.Elapsed.TotalSeconds < 5)
             {
-                _fface.Navigator.FaceHeading(position, false);
+                //_fface.Navigator.FaceHeading(position, false);
 
                 if (Math.Abs(prior - _fface.Player.CastPercentEx) < .5)
                 {
@@ -216,7 +216,7 @@ namespace EasyFarm.Classes
 
         private bool CastAbility(BattleAbility ability, Position position)
         {
-            _fface.Navigator.FaceHeading(position, false);
+            //_fface.Navigator.FaceHeading(position, false);
             SendCommand(ability.Command);
             TimeWaiter.Pause(100);
             return true;

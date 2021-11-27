@@ -20,6 +20,7 @@ namespace MemoryAPI
     public interface ITargetTools
     {
         int ID { get; }
+        bool LockedOn { get;  }
         bool SetNPCTarget(int index);
     }
 }

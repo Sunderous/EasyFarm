@@ -61,7 +61,7 @@ namespace MemoryAPI.Memory
             private readonly EliteAPI _api;
             private readonly EliteAPI _memoryApi;
 
-            public double DistanceTolerance { get; set; } = 3;
+            public double DistanceTolerance { get; set; } = 1;
             public bool IsStuck { get; set; } = false;
 
             public NavigationTools(EliteAPI api)
@@ -81,20 +81,22 @@ namespace MemoryAPI.Memory
                 return Math.Sqrt(Math.Pow(position.Z - player.Z, 2) + Math.Pow(position.X - player.X, 2));
             }
 
+            public void FaceTarget()
+            {
+                var player = _api.Entity.GetLocalPlayer();
+                FaceHeading(GetEntityPosition((int)player.TargetID), false);
+            }
+
             public void FaceHeading(Position position, bool isRunning)
             {
                 var player = _api.Entity.GetLocalPlayer();
 
-                var playerPosition = new Position();
-                playerPosition.X = player.X;
-                playerPosition.Y = player.Y;
-                playerPosition.Z = player.Z;
-                playerPosition.H = player.H;
+                var playerPosition = Helpers.ToPosition(player.X, player.Y, player.Z, player.H);
 
-                var radius = Radius(playerPosition, position);
+                //var radius = Radius(playerPosition, position);
                 var heading = Bearing(playerPosition, position);
 
-                SetViewMode(ViewMode.FirstPerson);
+                //SetViewMode(ViewMode.FirstPerson);
                 _api.Entity.SetEntityHPosition(_api.Entity.LocalPlayerIndex, (float)heading);
             }
 
@@ -120,12 +122,16 @@ namespace MemoryAPI.Memory
 
             public void GotoNPC(int id, Position position, bool keepRunning)
             {
-                if (DistanceTo(position) <= DistanceTolerance)
-                {
-                    if (!keepRunning) Reset();
-                    return;
-                }
-                MoveForwardTowardsPosition(position, keepRunning, true);
+                var entity = _api.GetCachedEntity(id);
+                _api.AutoFollow.SetAutoFollowInfo(entity.TargetingIndex, entity.TargetID, 0, 0);
+                _api.AutoFollow.IsAutoFollowing = true;
+
+                //if (DistanceTo(position) <= DistanceTolerance)
+                //{
+                //    if (!keepRunning) Reset();
+                //    return;
+                //}
+                //MoveForwardTowardsPosition(position, keepRunning, true);
             }
 
             private Position GetEntityPosition(int id)
@@ -137,17 +143,20 @@ namespace MemoryAPI.Memory
 
             private void MoveForwardTowardsPosition(Position targetPosition, bool keepRunning = true, bool keepOneYalmBack = false)
             {
-                FaceHeading(targetPosition, keepRunning);
-
-                _api.ThirdParty.KeyDown(Keys.NUMPAD8);
+                //FaceHeading(targetPosition, keepRunning);
+                //_api.ThirdParty.KeyDown(Keys.NUMPAD8);
+                _api.AutoFollow.SetAutoFollowCoords(targetPosition.X - _api.Player.X, targetPosition.Y - _api.Player.Y, targetPosition.Z - _api.Player.Z);
+                _api.AutoFollow.IsAutoFollowing = true;
 
                 if (keepOneYalmBack)
                 {
                     KeepOneYalmBack(targetPosition, keepRunning);
                 }
-
-                AvoidObstacles();
-
+                if(!IsEngaged())
+                {
+                    AvoidObstacles();
+                }
+                
                 if (!keepRunning) Reset();
             }
 
@@ -224,22 +233,29 @@ namespace MemoryAPI.Memory
                 int originalAttempts = attempts;
                 int count = 0;
                 float dir = -45;
+                var dirKey = Keys.NUMPAD4;
+
                 while (IsStuck && attempts-- > 0)
                 {
+                    var rand = new Random();
+                    var tryLeft = rand.NextDouble() > 0.5;
+
+                    dirKey = tryLeft ? Keys.NUMPAD4 : Keys.NUMPAD6;
+
                     Console.WriteLine("Wiggle character");
-                    _api.Entity.GetLocalPlayer().H = _api.Player.H + (float)(Math.PI / 180 * dir);
-                    _api.ThirdParty.KeyDown(Keys.NUMPAD8);
+                    //_api.Entity.GetLocalPlayer().H = _api.Player.H + (float)(Math.PI / 180 * dir);
+                    _api.ThirdParty.KeyDown(dirKey);
                     var keydownTime = Math.Round((originalAttempts - attempts) * new Random().NextDouble() * 1.5);
                     Thread.Sleep(TimeSpan.FromSeconds(keydownTime));
-                    _api.ThirdParty.KeyUp(Keys.NUMPAD8);
+                    _api.ThirdParty.KeyUp(dirKey);
                     count++;
                     if (count >= originalAttempts + 1)
                     {
-                        dir = (Math.Abs(dir - -45) < .001 ? 45 : -45);
+                        dir = Math.Abs(dir - -45) < .001 ? 45 : -45;
                         count = 0;
                     }
                 }
-                _api.ThirdParty.KeyUp(Keys.NUMPAD8);
+                _api.ThirdParty.KeyUp(dirKey);
             }
 
             public void ResetFacing(Keys? ignoreKey = null)
@@ -264,6 +280,7 @@ namespace MemoryAPI.Memory
 
             public void Reset()
             {
+                _api.AutoFollow.IsAutoFollowing = false;
                 ResetFacing();
                 _api.ThirdParty.KeyUp(Keys.NUMPAD6);
                 _api.ThirdParty.KeyUp(Keys.NUMPAD4);
@@ -487,6 +504,8 @@ namespace MemoryAPI.Memory
             }
 
             public int ID => (int)_api.Target.GetTargetInfo().TargetIndex;
+
+            public bool LockedOn => _api.Target.GetTargetInfo().LockedOn;
 
             public bool SetNPCTarget(int index)
             {

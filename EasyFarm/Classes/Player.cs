@@ -70,7 +70,7 @@ namespace EasyFarm.Classes
             {
                 fface.Windower.SendString(Constants.AttackTarget);
                 Thread.Sleep(500);
-                fface.Windower.SendString(Constants.ToggleLockOn);
+                //fface.Windower.SendString(Constants.ToggleLockOn);
             }
         }
 

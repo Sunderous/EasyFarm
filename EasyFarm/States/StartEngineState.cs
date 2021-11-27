@@ -52,7 +52,7 @@ namespace EasyFarm.States
 
                 context.API.Windower.SendString("/addon load chatmon");
                 context.API.Windower.SendString("/load lootwhore");
-                context.API.Windower.SendString("/autotarget off");
+                //context.API.Windower.SendString("/autotarget off");
                 context.API.Windower.SendString("/lw profile " + context.Player.Name.ToLowerInvariant());
                 context.API.Windower.SendString("/chatmon enable tell");
                 context.API.Windower.SendString("/chatmon enable examine");

@@ -24,6 +24,7 @@ namespace MemoryAPI
     {
         double DistanceTolerance { get; set; }
         bool IsStuck { get; set; }
+        void FaceTarget();
         void FaceHeading(Position position, bool isRunning);
         void GotoWaypoint(Position position, bool keepRunning);
         void GotoNPC(int ID, Position position, bool keepRunning);

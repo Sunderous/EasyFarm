@@ -62,12 +62,14 @@ namespace EasyFarm.States
 
             var currentPosition = context.Config.Route.GetCurrentPosition(context.API.Player.Position);
 
-            if (currentPosition == null || currentPosition.Distance(context.API.Player.Position) <= 0.5)
+            // This threshold was 0.5 originally, since we now use follow though we can cause ourselves
+            // to "hook" geometry if we start following the next point too early.
+            if (currentPosition == null || currentPosition.Distance(context.API.Player.Position) <= 1)
             {
                 currentPosition = context.Config.Route.GetNextPosition(context.API.Player.Position);
             }
 
-            /*context.API.Navigator.GotoWaypoint(
+            /*context.API.Navigator.GotoWaypoint(88888
                 nextPosition,
                 context.Config.IsObjectAvoidanceEnabled,
                 shouldKeepRunningToNextWaypoint);*/
