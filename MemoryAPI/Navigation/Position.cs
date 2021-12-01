@@ -54,7 +54,7 @@ namespace MemoryAPI.Navigation
 
         public double Distance(Position other)
         {
-            return Math.Sqrt(Math.Pow(X - other.X, 2) + Math.Pow(Z - other.Z, 2));
+            return Math.Sqrt(Math.Pow(X - other.X, 2) + Math.Pow(Z - other.Z, 2) + Math.Pow(Y - other.Y, 2));
         }
 
         public float[] ToDetourPosition()

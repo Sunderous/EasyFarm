@@ -59,7 +59,6 @@ namespace MemoryAPI.Memory
         {
             private const double TooCloseDistance = 1.5;
             private readonly EliteAPI _api;
-            private readonly EliteAPI _memoryApi;
 
             public double DistanceTolerance { get; set; } = 1;
             public bool IsStuck { get; set; } = false;
@@ -87,6 +86,11 @@ namespace MemoryAPI.Memory
                 FaceHeading(GetEntityPosition((int)player.TargetID), false);
             }
 
+            public bool IsFollowing()
+            {
+                return _api.AutoFollow.IsAutoFollowing;
+            }
+
             public void CancelFollow()
             {
                 _api.AutoFollow.IsAutoFollowing = false;
@@ -103,6 +107,21 @@ namespace MemoryAPI.Memory
 
                 //SetViewMode(ViewMode.FirstPerson);
                 _api.Entity.SetEntityHPosition(_api.Entity.LocalPlayerIndex, (float)heading);
+            }
+
+            public void RotateAroundMob(float initialHeading)
+            {
+                var player = _api.Entity.GetLocalPlayer();
+                var initialHeadingDeg = (180 / Math.PI) * initialHeading;
+
+                // We rotated around the mob with a 10 degree fuzz factor.
+                var upperHeading = initialHeadingDeg + 185;
+                var lowerHeading = initialHeadingDeg + 175;
+
+                while((180 / Math.PI) * player.H < lowerHeading || (180 / Math.PI) * player.H > upperHeading )
+                {
+                    _api.ThirdParty.KeyPress(Keys.NUMPAD6);
+                }
             }
 
             private double DistanceTo(Position position)
@@ -153,14 +172,14 @@ namespace MemoryAPI.Memory
                 _api.AutoFollow.SetAutoFollowCoords(targetPosition.X - _api.Player.X, targetPosition.Y - _api.Player.Y, targetPosition.Z - _api.Player.Z);
                 _api.AutoFollow.IsAutoFollowing = true;
 
-                if (keepOneYalmBack)
-                {
-                    KeepOneYalmBack(targetPosition, keepRunning);
-                }
-                if(!IsEngaged())
-                {
-                    AvoidObstacles();
-                }
+                //if (keepOneYalmBack)
+                //{
+                //    KeepOneYalmBack(targetPosition, keepRunning);
+                //}
+                //if(!IsEngaged())
+                //{
+                //    AvoidObstacles();
+                //}
                 
                 if (!keepRunning) Reset();
             }
@@ -441,6 +460,8 @@ namespace MemoryAPI.Memory
             public int MPPCurrent => (int)_api.Player.MPP;
 
             public string Name => _api.Player.Name;
+
+            public float Heading => _api.Player.H;
 
             public Position Position
             {

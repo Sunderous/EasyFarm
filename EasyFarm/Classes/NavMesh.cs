@@ -10,7 +10,8 @@ using MemoryAPI.Navigation;
 public class NavMesh
 {
 
-	static int MAX_PATH = 256;
+	//static int MAX_PATH = 256;
+	static int MAX_PATH = 512;
 	static int NAVMESHSET_MAGIC = 'M' << 24 | 'S' << 16 | 'E' << 8 | 'T'; //'MSET';
 	static int NAVMESHSET_VERSION = 1;
 	private Detour.dtNavMesh dtNavMesh;

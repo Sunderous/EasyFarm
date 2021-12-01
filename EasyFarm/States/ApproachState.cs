@@ -73,7 +73,7 @@ namespace EasyFarm.States
 
                 // Has the user decided we should engage in battle. 
                 // Original Distance = 25
-                if (context.Target.Distance <= 5 && context.Config.IsEngageEnabled)
+                if (context.Target.Distance <= 10 && context.Config.IsEngageEnabled)
                     Player.Engage(context.API);
 
                 if (context.Target.Distance <= Config.Instance.MeleeDistance)

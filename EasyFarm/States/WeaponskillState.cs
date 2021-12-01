@@ -35,7 +35,7 @@ namespace EasyFarm.States
                 return false;
 
             // Use skill if we are engaged. 
-            return context.API.Player.Status.Equals(Status.Fighting);
+            return context.API.Player.Status.Equals(Status.Fighting) && context.API.Player.TPCurrent >= 1000;
         }
 
         public override void Run(IGameContext context)
@@ -49,7 +49,8 @@ namespace EasyFarm.States
                 .FirstOrDefault(x => ActionFilters.TargetedFilter(context.API, x, context.Target));
             if (weaponskill == null)
                 return;
-            context.Memory.Executor.UseTargetedActions(context, new[] {weaponskill}, context.Target);
+
+            context.Memory.Executor.UseTargetedActions(context, new[] { weaponskill }, context.Target);
         }
     }
 }

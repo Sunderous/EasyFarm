@@ -31,6 +31,7 @@ namespace MemoryAPI
         float PosX { get; }
         float PosY { get; }
         float PosZ { get; }
+        float Heading { get; }
         Structures.PlayerStats Stats { get; }
         Status Status { get; }
         StatusEffect[] StatusEffects { get; }

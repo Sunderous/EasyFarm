@@ -25,6 +25,8 @@ namespace MemoryAPI
         double DistanceTolerance { get; set; }
         bool IsStuck { get; set; }
         void FaceTarget();
+        void RotateAroundMob(float initialHeading);
+        bool IsFollowing();
         void CancelFollow();
         void FaceHeading(Position position, bool isRunning);
         void GotoWaypoint(Position position, bool keepRunning);

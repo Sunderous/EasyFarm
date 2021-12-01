@@ -34,11 +34,7 @@ namespace EasyFarm.States
     /// </summary>
     public class BattleState : BaseState
     {
-        private MemoryAPI.Navigation.Position lastPosition = null;
-
-        private Timer _hppCheck = new Timer(5000);
-
-        private int _lastTargetHpp = 100;
+        private float initialHeading = 0.0f;
 
         public override bool Check(IGameContext context)
         {
@@ -67,14 +63,8 @@ namespace EasyFarm.States
 
         public override void Enter(IGameContext context)
         {
-            // This ensures if HPP hasn't changed for 5 seconds, we disengage
-            // since positioning must be messed up somehow.
-            //_hppCheck.Elapsed += (sender, e) => HppCheck_Tick(sender, e, context);
-            //_hppCheck.Start();
-
             Player.Stand(context.API);
-           //context.API.Navigator.Reset();
-           //context.API.Navigator.FaceHeading(context.Target.Position, false);
+            initialHeading = context.API.Player.Heading;
         }
 
         // Need to make sure if claim gets snaked after we /follow the target,
@@ -84,39 +74,31 @@ namespace EasyFarm.States
             context.API.Navigator.CancelFollow();
         }
 
-        //private void HppCheck_Tick(object sender, EventArgs e, IGameContext context)
-        //{
-        //    if(context.Target.HppCurrent == _lastTargetHpp)
-        //    {
-        //        Player.Disengage(context.API);
-        //    }
-
-        //    _lastTargetHpp = context.Target.HppCurrent;
-        //}
-
         public override void Run(IGameContext context)
         {
-            if (context.Player.Status == Status.Fighting && context.Target.HppCurrent == 100)
+            // By spamming this, we ensure that we'll always be facing the mob,
+            // and if target/engaged gets confused we'll always switch to attacking
+            // whatever we actually have targetted. Also keeps us near the mob if we
+            // get knocked back.
+            if (context.Player.Status == Status.Fighting)
             {
-                //Player.Disengage(context.API);
                 context.API.Windower.SendString("/attack <t>");
             }
+
+            if(!context.API.Navigator.IsFollowing())
+            {
+                context.API.Windower.SendString("/follow <t>");
+            }
+
 
             if (!context.Memory.EliteApi.Target.LockedOn)
             {
                 context.API.Windower.SendString(Constants.ToggleLockOn);
             }
-            else if (context.Player.Status == Status.Fighting && context.Target.HppCurrent == 100)
-            {
-                context.API.Windower.SendString("/follow <t>");
-                //context.API.Windower.SendKeyPress(EliteMMO.API.Keys.NUMPAD2);
-            }
 
-            ShouldRecycleBattleStateCheck(context, lastPosition);
+            //Console.WriteLine("ROTATING AROUND MOB");
+            //context.API.Navigator.RotateAroundMob(initialHeading);
 
-            lastPosition = context.Target.Position;
-
-            //context.API.Navigator.FaceHeading(context.Target.Position, false);
 
             // Cast only one action to prevent blocking curing. 
             var action = context.Config.BattleLists["Battle"].Actions

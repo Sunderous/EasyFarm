@@ -846,7 +846,12 @@ namespace MemoryAPI
         Silver_Knife = 283,
         Celennia_Wexworth_Memorial_Library = 284,
         Feretory = 285,
+        Escha_ZiTah = 288,
+        Escha_RuAun = 289,
+        Desuetia_Empyreal_Paradox = 290,
         Reisenjima = 291,
+        Reisenjima_Henge = 292,
+        Reisenjima_Sanctorium = 293,
 
 
     } // @ public enum Zone : short 
