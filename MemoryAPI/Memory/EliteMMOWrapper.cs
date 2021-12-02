@@ -120,8 +120,10 @@ namespace MemoryAPI.Memory
 
                 while((180 / Math.PI) * player.H < lowerHeading || (180 / Math.PI) * player.H > upperHeading )
                 {
-                    _api.ThirdParty.KeyPress(Keys.NUMPAD6);
+                    _api.ThirdParty.KeyDown(Keys.NUMPAD6);
                 }
+
+                _api.ThirdParty.KeyUp(Keys.NUMPAD6);
             }
 
             private double DistanceTo(Position position)

@@ -1,336 +1,157 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using MemoryAPI;
 using MemoryAPI.Navigation;
-
+using SharpNav;
+using SharpNav.Geometry;
+using SharpNav.IO.Json;
+using SharpNav.Pathfinding;
+using SPath = SharpNav.Pathfinding.Path;
 
 public class NavMesh
 {
 
-	//static int MAX_PATH = 256;
-	static int MAX_PATH = 512;
-	static int NAVMESHSET_MAGIC = 'M' << 24 | 'S' << 16 | 'E' << 8 | 'T'; //'MSET';
-	static int NAVMESHSET_VERSION = 1;
-	private Detour.dtNavMesh dtNavMesh;
-	private Zone _zone;
+    //static int MAX_PATH = 256;
+    static int MAX_PATH = 512;
+    private NavMeshQuery snNavMeshQuery;
+    private Zone _zone;
 
-	public NavMesh()
-	{
-	}
+    public NavMesh()
+    {
+    }
 
-	public struct NavMeshSetHeader
-	{
-		public int magic;
-		public int version;
-		public int numTiles;
-		public Detour.dtNavMeshParams meshParams;
+    public struct NavMeshTileHeader
+    {
+        public uint tileRef;
+        public int dataSize;
 
-		public static int ByteSize()
-		{
-			var start = IndexOfTileHeaderBytes();
+        public static int ByteSize()
+        {
+            var start = 0;
 
-			start += Detour.dtNavMeshParams.ByteSize();
+            start += sizeof(uint);
+            start += sizeof(int);
 
-			return start;
-		}
+            return start;
+        }
 
-		public static int IndexOfTileHeaderBytes()
-		{
-			var start = 0;
+        public int FromBytes(byte[] array, int start)
+        {
+            tileRef = BitConverter.ToUInt32(array, start); start += sizeof(uint);
+            dataSize = BitConverter.ToInt32(array, start); start += sizeof(int);
 
-			start += sizeof(int);
-			start += sizeof(int);
-			start += sizeof(int);
+            return start;
+        }
+    }
 
-			return start;
-		}
+    public bool LoadZone(Zone zone)
 
-		public int FromBytes(byte[] array, int start)
-		{
-			magic = BitConverter.ToInt32(array, start); start += sizeof(int);
-			version = BitConverter.ToInt32(array, start); start += sizeof(int);
-			numTiles = BitConverter.ToInt32(array, start); start += sizeof(int);
-			meshParams = new Detour.dtNavMeshParams();
-			meshParams.FromBytes(array, start); start += Detour.dtNavMeshParams.ByteSize();
+    {
+        if (zone == Zone.Unknown)
+        {
+            Unload();
+            return false;
+        }
 
-			return start;
-		}
-	}
-	public struct NavMeshTileHeader
-	{
-		public uint tileRef;
-		public int dataSize;
+        string path = "navmeshes\\" + zone.ToString() + ".snb";
 
-		public static int ByteSize()
-		{
-			var start = 0;
+        if (_zone == zone)
+        {
+            return true;
+        }
+        else
+        {
+            Unload();
+        }
 
-			start += sizeof(uint);
-			start += sizeof(int);
+        _zone = zone;
 
-			return start;
-		}
+        if (!File.Exists(path))
+        {
+            return false;
+        }
 
-		public int FromBytes(byte[] array, int start)
-		{
-			tileRef = BitConverter.ToUInt32(array, start); start += sizeof(uint);
-			dataSize = BitConverter.ToInt32(array, start); start += sizeof(int);
+        var tiledNavMesh = new NavMeshJsonSerializer().Deserialize(path);
+        snNavMeshQuery = new NavMeshQuery(tiledNavMesh, 2048);
 
-			return start;
-		}
-	}
+        return true;
+    }
 
-	public bool LoadZone(Zone zone)
+    public void Unload()
+    {
+        snNavMeshQuery = null;
+    }
 
-	{
-		if (zone == Zone.Unknown)
-		{
-			Unload();
-			return false;
-		}
+    private static Position ToFFXIPosition(float[] detourPosition)
+    {
+        var ffxiPosition = new Position();
 
-		string path = "navmeshes\\" + zone.ToString() + ".nav";
+        ffxiPosition.X = detourPosition[0];
+        ffxiPosition.Y = -detourPosition[1];
+        ffxiPosition.Z = -detourPosition[2];
 
-		if (_zone == zone && dtNavMesh != null)
-		{
-			return true;
-		}
-		else
-		{
-			Unload();
-		}
+        return ffxiPosition;
 
-		_zone = zone;
+    }
 
-		var headerBufferSize = NavMeshSetHeader.ByteSize();
-		var headerBuffer = new byte[headerBufferSize];
+    public Queue<Position> FindPathBetween(Position start, Position end, bool useStraightPath = false)
+    {
+        var path = new Queue<Position>();
 
-		if (!File.Exists(path))
-		{
-			return false;
-		}
+        if (snNavMeshQuery == null)
+        {
+            return path;
+        }
 
-		var file = File.OpenRead(path);
-		file.Read(headerBuffer, 0, headerBufferSize);
+        var startDetour = start.ToDetourPosition();
+        Vector3 startSN = new Vector3(startDetour[0], startDetour[1], startDetour[2]);
 
-		NavMeshSetHeader header = new NavMeshSetHeader();
-		var headerBytesRead = header.FromBytes(headerBuffer, 0);
+        var endDetour = end.ToDetourPosition();
+        Vector3 endSN = new Vector3(endDetour[0], endDetour[1], endDetour[2]);
 
-		if (header.magic != NAVMESHSET_MAGIC)
-		{
-			return false;
-		}
+        var extents = new Vector3(5.0f, 5.0f, 5.0f);
 
-		if (header.version != NAVMESHSET_VERSION)
-		{
-			return false;
-		}
+        var startPoint = snNavMeshQuery.FindNearestPoly(startSN, extents);
+        var endPoint = snNavMeshQuery.FindNearestPoly(endSN, extents);
 
-		var navMesh = new Detour.dtNavMesh();
-		navMesh.init(header.meshParams);
+        SPath navPath = new SPath();
+        snNavMeshQuery.FindPath(ref startPoint, ref endPoint, new SharpNav.Pathfinding.NavQueryFilter(), navPath);
 
-		for (int i = 0; i < header.numTiles; ++i)
-		{
-			var tileHeaderBuffer = new byte[NavMeshTileHeader.ByteSize()];
-			file.Read(tileHeaderBuffer, 0, tileHeaderBuffer.Length);
-			var tileHeader = new NavMeshTileHeader();
-			tileHeader.FromBytes(tileHeaderBuffer, 0);
-			if (tileHeader.dataSize == 0 || tileHeader.tileRef == 0)
-			{
-				break;
-			}
-			var rawTileData = new Detour.dtRawTileData();
-			var data = new byte[tileHeader.dataSize];
-			file.Read(data, 0, data.Length);
-			rawTileData.FromBytes(data, 0);
-			uint result = 0;
-			navMesh.addTile(rawTileData, tileHeader.dataSize, 0x01 /*DT_TILE_FREE_DATA*/, tileHeader.tileRef, ref result);
-			if (Detour.dtStatusFailed(result))
-			{
-				return false;
-			}
-		}
+        StraightPath straightPath = new StraightPath();
+        snNavMeshQuery.FindStraightPath(startSN, endSN, navPath, straightPath, PathBuildFlags.AllCrossingVertices);
 
-		// hard-code to make sure it is compatible with expectation.
-		var maxPolys = header.meshParams.maxPolys;
+        if (straightPath.Count == 0)
+        {
+            path.Enqueue(start);
+            path.Enqueue(end);
+            return path;
+        }
 
-		var status = new Detour.dtNavMeshQuery().init(navMesh, maxPolys);
+        if (straightPath.Count > 0)
+        {
+            for (int i = 0; i < straightPath.Count; i++)
+            {
+                var pos = straightPath[i].Point.Position;
 
-		if (Detour.dtStatusFailed(status))
-		{
-			return false;
-		}
+                var posArr = new float[] { pos.X, pos.Y, pos.Z };
+                var position = ToFFXIPosition(posArr);
 
-		dtNavMesh = navMesh;
+                path.Enqueue(position);
+            }
+        }
 
-		return headerBytesRead > 0;
-	}
-
-	public void Unload()
-	{
-		dtNavMesh = null;
-	}
-
-	private static Position ToFFXIPosition(float[] detourPosition)
-	{
-		var ffxiPosition = new Position();
-		
-		ffxiPosition.X = detourPosition[0];
-		ffxiPosition.Y = -detourPosition[1];
-		ffxiPosition.Z = -detourPosition[2];
-
-		return ffxiPosition;
-
-	}
-
-	public Queue<Position> FindPathBetween(Position start, Position end, bool useStraightPath = false)
-	{
-		var path = new Queue<Position>();
-
-		if (dtNavMesh == null)
-		{
-			return path;
-		}
-		var startDetourPosition = start.ToDetourPosition();
-		var endDetourPosition = end.ToDetourPosition();
-
-		var queryFilter = new Detour.dtQueryFilter();
-		var navMeshQuery = new Detour.dtNavMeshQuery();
-
-		var status = navMeshQuery.init(dtNavMesh, MAX_PATH);
-
-		if (Detour.dtStatusFailed(status))
-		{
-			return path;
-		}
-		queryFilter.setIncludeFlags(0xffff);
-		queryFilter.setExcludeFlags(0x0);
-
-		uint startRef = 0;
-		uint endRef = 0;
-		float[] startNearest = new float[3];
-		float[] endNearest = new float[3];
-
-		float[] extents = new float[] { 10.0F, 25.0F, 10.0F };
-
-		status = navMeshQuery.findNearestPoly(startDetourPosition, extents, queryFilter, ref startRef, ref startNearest);
-
-		if (Detour.dtStatusFailed(status))
-		{
-			return path;
-		}
-
-		status = navMeshQuery.findNearestPoly(endDetourPosition, extents, queryFilter, ref endRef, ref endNearest);
-
-		if (Detour.dtStatusFailed(status))
-		{
-			return path;
-		}
-
-		if (!dtNavMesh.isValidPolyRef(startRef) || !dtNavMesh.isValidPolyRef(endRef))
-		{
-			return path;
-		}
-
-		uint[] pathPolys = new uint[MAX_PATH];
-		int pathCount = 0;
-		float[] straightPath = new float[MAX_PATH * 3];
-		byte[] straightPathFlags = new byte[MAX_PATH];
-		uint[] straightPathPolys = new uint[MAX_PATH];
-		int straightPathCount = 0;
-
-		status = navMeshQuery.findPath(
-			startRef,
-			endRef, 
-			startNearest,
-			endNearest,
-			queryFilter,
-			pathPolys,
-			ref pathCount,
-			MAX_PATH
-		);
-
-		if (Detour.dtStatusFailed(status))
-		{
-			path.Enqueue(start);
-			path.Enqueue(end);
-			return path;
-		}
-
-		status = navMeshQuery.findStraightPath(
-			startNearest,
-			endNearest,
-			pathPolys,
-			pathCount,
-			straightPath,
-			straightPathFlags,
-			straightPathPolys,
-			ref straightPathCount,
-			MAX_PATH,
-			(int)Detour.dtStraightPathOptions.DT_STRAIGHTPATH_ALL_CROSSINGS
-		);
-
-		if (Detour.dtStatusFailed(status))
-		{
-			path.Enqueue(start);
-			path.Enqueue(end);
-			return path;
-		}
-
-		if (straightPathCount > 0)
-		{
-			if (Detour.dtStatusFailed(status))
-			{
-				return path;
-			}
-
-			for (int i = 3; i < straightPathCount * 3;)
-			{
-				float[] pathPos = new float[3];
-				pathPos[0] = straightPath[i++];
-				pathPos[1] = straightPath[i++];
-				pathPos[2] = straightPath[i++];
-
-				var position = ToFFXIPosition(pathPos);
-
-				path.Enqueue(position);
-			}
-		}
-		else
-		{
-			for (int i = 1; i < pathCount; i++)
-			{
-				float[] pathPos = new float[3];
-				bool posOverPoly = false;
-				if (Detour.dtStatusFailed(navMeshQuery.closestPointOnPoly(pathPolys[i], startDetourPosition, pathPos, ref posOverPoly)))
-					return path;
-
-				if (path.Count < 1)
-				{
-					if (Detour.dtStatusFailed(navMeshQuery.closestPointOnPolyBoundary(pathPolys[i], startDetourPosition, pathPos)))
-						return path;
-				}
-
-				var position = ToFFXIPosition(pathPos);
-
-				path.Enqueue(position);
-			}
-		}
-
-		if (path.Count < 1)
-		{
-			path.Enqueue(end);
-		}
+        if (path.Count < 1)
+        {
+            path.Enqueue(end);
+        }
 
         return path;
 
-	}
+    }
 
-	public Position NextRandomPosition(Position start)
-	{
-		return new Position();
-	}
+    public Position NextRandomPosition(Position start)
+    {
+        return new Position();
+    }
 }

@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EasyFarm</RootNamespace>
     <AssemblyName>EasyFarm</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -187,12 +187,6 @@
     <Compile Include="Context\IGameContext.cs" />
     <Compile Include="Context\IPlayer.cs" />
     <Compile Include="Context\Player.cs" />
-    <Compile Include="Detour\DetourCommon.cs" />
-    <Compile Include="Detour\DetourNavMesh.cs" />
-    <Compile Include="Detour\DetourNavMeshBuilder.cs" />
-    <Compile Include="Detour\DetourNavMeshQuery.cs" />
-    <Compile Include="Detour\DetourNode.cs" />
-    <Compile Include="Detour\DetourStatus.cs" />
     <Compile Include="Handlers\SelectAbilityRequestHandler.cs" />
     <Compile Include="Handlers\SelectCharacter.cs" />
     <Compile Include="Handlers\SelectCharacterResult.cs" />
@@ -223,21 +217,13 @@
     <Compile Include="Classes\LogEntries.cs" />
     <Compile Include="Logging\LogEntry.cs" />
     <Compile Include="Logging\LoggingEventType.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Classes\NullUnit.cs" />
-    <Compile Include="Recast\Recast.cs" />
-    <Compile Include="Recast\RecastArea.cs" />
-    <Compile Include="Recast\RecastContour.cs" />
-    <Compile Include="Recast\RecastFilter.cs" />
-    <Compile Include="Recast\RecastLayers.cs" />
-    <Compile Include="Recast\RecastMesh.cs" />
-    <Compile Include="Recast\RecastMeshDetail.cs" />
-    <Compile Include="Recast\RecastRasterization.cs" />
-    <Compile Include="Recast\RecastRegion.cs" />
     <Compile Include="States\StateHistory.cs" />
     <Compile Include="States\StateLog.cs" />
     <Compile Include="States\StateStatus.cs" />
@@ -288,7 +274,6 @@
     <Compile Include="Persistence\SettingsManager.cs" />
     <Compile Include="Classes\ActionFilters.cs" />
     <Compile Include="Classes\UnitFilters.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="States\FiniteStateMachine.cs" />
     <Compile Include="States\HealingState.cs" />
     <Compile Include="States\EndState.cs" />
@@ -363,8 +348,6 @@
   <ItemGroup>
     <AppDesigner Include="Properties\" />
     <None Include="app.config" />
-    <None Include="Detour\DetourNode.cs.meta" />
-    <None Include="Detour\DetourStatus.cs.meta" />
     <None Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -482,15 +465,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Recast\Recast.cs.meta" />
-    <None Include="Recast\RecastArea.cs.meta" />
-    <None Include="Recast\RecastContour.cs.meta" />
-    <None Include="Recast\RecastFilter.cs.meta" />
-    <None Include="Recast\RecastLayers.cs.meta" />
-    <None Include="Recast\RecastMesh.cs.meta" />
-    <None Include="Recast\RecastMeshDetail.cs.meta" />
-    <None Include="Recast\RecastRasterization.cs.meta" />
-    <None Include="Recast\RecastRegion.cs.meta" />
     <None Include="trayicon.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -507,6 +481,10 @@
     <ProjectReference Include="..\MemoryAPI\MemoryAPI.csproj">
       <Project>{cc6cc9be-32f0-4b8a-a1ad-6c7c744e2fad}</Project>
       <Name>MemoryAPI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpNav\SharpNav.csproj">
+      <Project>{0e3c6e73-cce6-4148-b847-36487ffea225}</Project>
+      <Name>SharpNav</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

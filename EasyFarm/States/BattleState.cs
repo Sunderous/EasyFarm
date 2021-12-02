@@ -97,7 +97,7 @@ namespace EasyFarm.States
             }
 
             //Console.WriteLine("ROTATING AROUND MOB");
-            //context.API.Navigator.RotateAroundMob(initialHeading);
+            context.API.Navigator.RotateAroundMob(initialHeading);
 
 
             // Cast only one action to prevent blocking curing. 
@@ -105,64 +105,6 @@ namespace EasyFarm.States
                 .FirstOrDefault(x => ActionFilters.TargetedFilter(context.API, x, context.Target));
             if (action == null) return;
             context.Memory.Executor.UseTargetedActions(context, new[] {action}, context.Target);
-        }
-        
-        enum BuggedMobResponseActions
-        {
-            MoveLeft,
-            MoveRight/*,
-            MoveBack*/
-        }
-
-        private void ShouldRecycleBattleStateCheck(IGameContext context, MemoryAPI.Navigation.Position lastPosition)
-        {
-
-            var chatEntries = context.API.Chat.ChatEntries.ToList();
-            var invalidTargetPattern = new Regex("Unable to see");
-            var invalidTargetPattern2 = new Regex("cannot see");
-            // blacklist "You cannot attack that target"
-
-            List<EliteMMO.API.EliteAPI.ChatEntry> matches = chatEntries
-                .Where(x => invalidTargetPattern.IsMatch(x.Text) || invalidTargetPattern2.IsMatch(x.Text)).ToList();
-
-            var now = DateTime.Now;
-            var threeSeconds = now.AddSeconds(-1.5);
-
-            foreach (EliteMMO.API.EliteAPI.ChatEntry m in matches.Where(x => x.Timestamp >= threeSeconds && x.Timestamp <= now))
-            {
-                // only try to unstuck bugged mob if mob isn't moving...
-                if (lastPosition == null || !context.Target.Position.Equals(lastPosition) || context.Target.Distance > context.Config.MeleeDistance)
-                {
-                    LogViewModel.Write("Unable to engage target, but it is moving, so not counting it as bugged yet.");
-                    return;
-                } else
-                {
-                    var random = new Random();
-                    // only execute 50% of the time
-                    /*if (random.NextDouble() > 0.5)
-                    {
-                        continue;
-                    }*/
-                    var actionIndex = random.Next(Enum.GetNames(typeof(BuggedMobResponseActions)).Length);
-                    var actions = Enum.GetValues(typeof(BuggedMobResponseActions));
-                    var action = actions.GetValue(actionIndex);
-                    switch (action)
-                    {
-                        case BuggedMobResponseActions.MoveLeft:
-                            LogViewModel.Write("Target is bugged, trying to unbug it by moving left.");
-                            context.API.Windower.SendKeyDown(EliteMMO.API.Keys.A);
-                            context.API.Windower.SendHoldKey(EliteMMO.API.Keys.S, new Random().Next(500, 3000));
-                            context.API.Windower.SendKeyUp(EliteMMO.API.Keys.A);
-                            break;
-                        case BuggedMobResponseActions.MoveRight:
-                            LogViewModel.Write("Target is bugged, trying to unbug it by moving right.");
-                            context.API.Windower.SendKeyDown(EliteMMO.API.Keys.A);
-                            context.API.Windower.SendHoldKey(EliteMMO.API.Keys.W, new Random().Next(500, 3000));
-                            context.API.Windower.SendKeyUp(EliteMMO.API.Keys.A);
-                            break;
-                    }
-                }
-            }
-        }
+        }    
     }
 }

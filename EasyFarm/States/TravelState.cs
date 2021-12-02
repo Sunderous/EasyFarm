@@ -70,7 +70,7 @@ namespace EasyFarm.States
             }
 
             var path = context.NavMesh.FindPathBetween(context.API.Player.Position, currentPosition);
-            
+
             if (path.Count > 0)
             {
                 context.API.Navigator.DistanceTolerance = 1.0;

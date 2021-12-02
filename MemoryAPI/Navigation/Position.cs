@@ -31,7 +31,7 @@ namespace MemoryAPI.Navigation
 
         public override string ToString()
         {
-            return "(X: " + X + " Z: " + Z + ")";
+            return "(X: " + X + " Z: " + Z + " Y: " + Y + ")";
         }
 
         public override int GetHashCode()
