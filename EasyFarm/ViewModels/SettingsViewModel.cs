@@ -113,6 +113,15 @@ namespace EasyFarm.ViewModels
             }
         }
 
+        public bool RotateAroundTarget
+        {
+            get { return Config.Instance.RotateAroundTarget; }
+            set
+            {
+                Set(ref Config.Instance.RotateAroundTarget, value);
+            }
+        }
+
         public bool HomePointOnDeath
         {
             get { return Config.Instance.HomePointOnDeath; }

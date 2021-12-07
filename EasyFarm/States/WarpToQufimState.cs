@@ -15,51 +15,40 @@
 // You should have received a copy of the GNU General Public License
 // If not, see <http://www.gnu.org/licenses/>.
 // ///////////////////////////////////////////////////////////////////
-using System;
-using EasyFarm.Classes;
 using EasyFarm.Context;
 using MemoryAPI;
+using MemoryAPI.Navigation;
 
 namespace EasyFarm.States
 {
-    public class ZoneState : BaseState
+    /// <summary>
+    ///     Enters Reisenjima after we've teleported to the canyon.
+    /// </summary>
+    public class WarpToQufimState : BaseState
     {
-        public Action ZoningAction { get; set; } = () => TimeWaiter.Pause(500);
-
-        private bool IsZoning(IGameContext context) => context.Player.Str == 0;
-
-        public override void Enter(IGameContext context)
-        {
-            if (context.Zone == Zone.Unknown)
-            {
-                context.Zone = context.Player.Zone;
-            }
-        }
+        Position homePointPosition = new Position() { X = 181.21f, Y = -12f, Z = 224.802f };
 
         public override bool Check(IGameContext context)
         {
-            var zone = context.Player.Zone;
-            return ZoneChanged(zone, context.Zone) || IsZoning(context);
-        }
+            if (context.Zone != Zone.Port_Windurst)
+                return false;
 
-        private bool ZoneChanged(Zone currentZone, Zone lastZone)
-        {
-            return lastZone != currentZone;
+            if (!context.API.Player.HasKeyItem(3261))
+                return false;
+
+
+            return true;
         }
 
         public override void Run(IGameContext context)
         {
-            // Set new currentZone.
-            context.Zone = context.Player.Zone;
 
-            // Stop program from running to next waypoint.
-            context.API.Navigator.Reset();
+            context.NavMesh.GoToPosition(context.API, homePointPosition);
 
-            // Wait until we are done zoning.
-            while (IsZoning(context)) ZoningAction();
-
-            // Load new zone's nav mesh
-            context.NavMesh.LoadZone(context.Zone);
+            if (context.API.Player.Position.Distance(homePointPosition) <= 3)
+            {
+                context.API.NPC.MenuSequence("Home Point #3", new int[] { 1, 2, 2, 2 });
+            }
         }
     }
 }

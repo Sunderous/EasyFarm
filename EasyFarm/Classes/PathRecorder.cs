@@ -49,7 +49,7 @@ namespace EasyFarm.Classes
         /// </summary>
         private Position _lastPosition;
 
-        private float _recordDistance = 10;
+        private float _recordDistance = 15;
 
         /// <summary>
         /// The memory source to retrieve the character's position from. 

@@ -28,9 +28,7 @@ namespace EasyFarm.States
     public class Route
     {
         private int _position = -1;
-        private Position _lastPosition;
 
-        private List<Position> _positions = new List<Position>();
         public bool StraightRoute = true;
         public ObservableCollection<Position> Waypoints = new ObservableCollection<Position>();
         public Zone Zone { get; set; }
@@ -44,50 +42,43 @@ namespace EasyFarm.States
 
         public Position GetCurrentPosition(Position playerPosition)
         {
-            _positions = Waypoints.ToList();
-
             if (_position == -1)
             {
                 return GetNextPosition(playerPosition);
             }
 
-            if (_position >= _positions.Count)
+            if (_position >= Waypoints.Count)
             {
                 return null;
             }
 
-            return _positions[_position];
+            return Waypoints[_position];
         }
 
         public Position GetNextPosition(Position playerPosition)
         {
-            _positions = Waypoints.ToList();
-
-            if (_positions.Count <= 0)
+            if (Waypoints.Count <= 0)
             {
                 return null;
             }
 
-            if (_positions.Count < 2 && _position > -1)
+            if (Waypoints.Count < 2 && _position > -1)
             {
-                return _positions[_position];
+                return Waypoints[_position];
             }
 
-            var closestPositions = _positions
-                .OrderBy(x => Distance(playerPosition, x));
-
-            var closest = closestPositions.FirstOrDefault();
+            var closest = Waypoints
+                .OrderBy(x => Distance(playerPosition, x)).FirstOrDefault();
 
             if (_position == -1)
             {
-                _position = _positions.IndexOf(closest);
+                _position = Waypoints.IndexOf(closest);
             }
-            else if (_position == _positions.Count)
+            else if (_position == Waypoints.Count)
             {
                 if (StraightRoute)
                 {
                     Waypoints = new ObservableCollection<Position>(Waypoints.Reverse());
-                    _positions.Reverse();
                     EasyFarm.ViewModels.LogViewModel.Write("Reached the end of waypoints; reversing.");
                 }
                 else
@@ -99,7 +90,7 @@ namespace EasyFarm.States
 
             }
 
-            var newPosition = _positions[_position];
+            var newPosition = Waypoints[_position];
 
             EasyFarm.ViewModels.LogViewModel.Write("Navigating to waypoint ("+_position+") " + newPosition.ToString());
 
@@ -115,11 +106,9 @@ namespace EasyFarm.States
 
         public void Reset()
         {
-            _lastPosition = null;
             Waypoints.Clear();
             Zone = Zone.Unknown;
             _position = -1;
-            _positions.Clear();
         }
 
         public bool IsWithinDistance(Position position, double distance)

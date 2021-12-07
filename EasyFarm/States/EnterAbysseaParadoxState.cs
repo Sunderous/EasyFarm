@@ -15,51 +15,41 @@
 // You should have received a copy of the GNU General Public License
 // If not, see <http://www.gnu.org/licenses/>.
 // ///////////////////////////////////////////////////////////////////
-using System;
-using EasyFarm.Classes;
 using EasyFarm.Context;
 using MemoryAPI;
+using MemoryAPI.Navigation;
 
 namespace EasyFarm.States
 {
-    public class ZoneState : BaseState
+    /// <summary>
+    ///     Enters abby paradox after we zone into qufim.
+    /// </summary>
+    public class EnterAbysseaParadoxState : BaseState
     {
-        public Action ZoningAction { get; set; } = () => TimeWaiter.Pause(500);
-
-        private bool IsZoning(IGameContext context) => context.Player.Str == 0;
-
-        public override void Enter(IGameContext context)
-        {
-            if (context.Zone == Zone.Unknown)
-            {
-                context.Zone = context.Player.Zone;
-            }
-        }
+        Position paradoxPortal = new Position() { X = -258.78757f, Y = -21.382929f, Z = 221.74797f };
 
         public override bool Check(IGameContext context)
         {
-            var zone = context.Player.Zone;
-            return ZoneChanged(zone, context.Zone) || IsZoning(context);
-        }
+            // If we aren't in qufim.
+            if (context.Zone != Zone.Qufim_Island)
+                return false;
 
-        private bool ZoneChanged(Zone currentZone, Zone lastZone)
-        {
-            return lastZone != currentZone;
+            return true;
         }
 
         public override void Run(IGameContext context)
         {
-            // Set new currentZone.
-            context.Zone = context.Player.Zone;
+            // Move to portal.
+            // X: -258.78757, Y: -21.382929, Z: 221.74797
+            context.NavMesh.GoToPosition(context.API, paradoxPortal);
 
-            // Stop program from running to next waypoint.
-            context.API.Navigator.Reset();
-
-            // Wait until we are done zoning.
-            while (IsZoning(context)) ZoningAction();
-
-            // Load new zone's nav mesh
-            context.NavMesh.LoadZone(context.Zone);
+            // Enter portal.
+            // Name = Transcendental radiance
+            // Options = [ 1 ]
+            if (context.API.Player.Position.Distance(paradoxPortal) <= 3)
+            {
+                context.API.NPC.MenuSequence("Transcendental Radiance", new int[] { 1 });
+            }
         }
     }
 }

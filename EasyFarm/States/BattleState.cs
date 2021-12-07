@@ -36,6 +36,8 @@ namespace EasyFarm.States
     {
         private float initialHeading = 0.0f;
 
+        public static float KillCount = 0;
+
         public override bool Check(IGameContext context)
         {
             if (new RestState().Check(context)) 
@@ -43,6 +45,9 @@ namespace EasyFarm.States
 
             // Make sure we don't need trusts
             if (new SummonTrustsState().Check(context)) 
+                return false;
+
+            if (new WarpHomeState().Check(context))
                 return false;
 
             // Mobs has not been pulled if pulling moves are available. 
@@ -72,6 +77,7 @@ namespace EasyFarm.States
         public override void Exit(IGameContext context)
         {
             context.API.Navigator.CancelFollow();
+            KillCount++;
         }
 
         public override void Run(IGameContext context)
@@ -96,9 +102,10 @@ namespace EasyFarm.States
                 context.API.Windower.SendString(Constants.ToggleLockOn);
             }
 
-            //Console.WriteLine("ROTATING AROUND MOB");
-            context.API.Navigator.RotateAroundMob(initialHeading);
-
+            if(Config.Instance.RotateAroundTarget)
+            {
+                context.API.Navigator.RotateAroundMob(initialHeading);
+            }
 
             // Cast only one action to prevent blocking curing. 
             var action = context.Config.BattleLists["Battle"].Actions

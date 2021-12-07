@@ -36,6 +36,9 @@ namespace EasyFarm.States
             // Update last time target was updated. 
             _lastTargetCheck = DateTime.Now;
 
+            if (new SummonTrustsState().Check(context))
+                return false;
+
             return shouldCheck;
         }
 
@@ -55,7 +58,7 @@ namespace EasyFarm.States
                 context.Target = target;
 
                 // FIXME: if random path is set, do not reset? make this configurable?
-                context.Config.Route.ResetCurrentWaypoint();
+                //context.Config.Route.ResetCurrentWaypoint();
 
                 LogViewModel.Write("Now targeting " + context.Target.Name + " : " + context.Target.Id);
             }

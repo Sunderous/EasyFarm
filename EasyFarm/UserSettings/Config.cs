@@ -197,6 +197,13 @@ namespace EasyFarm.UserSettings
         public bool EnableTabTargeting = false;
 
         /// <summary>
+        /// Toggles whether our character should rotate 180 degrees around
+        /// the target after engaging, to effectively keep it between us
+        /// and our trusts.
+        /// </summary>
+        public bool RotateAroundTarget = false;
+
+        /// <summary>
         /// Whether the player should avoid objects when becoming stuck.
         /// </summary>
         public bool IsObjectAvoidanceEnabled = false;

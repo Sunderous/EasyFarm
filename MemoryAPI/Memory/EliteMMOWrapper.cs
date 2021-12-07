@@ -308,10 +308,6 @@ namespace MemoryAPI.Memory
             {
                 _api.AutoFollow.IsAutoFollowing = false;
                 ResetFacing();
-                _api.ThirdParty.KeyUp(Keys.NUMPAD6);
-                _api.ThirdParty.KeyUp(Keys.NUMPAD4);
-                _api.ThirdParty.KeyUp(Keys.NUMPAD8);
-                _api.ThirdParty.KeyUp(Keys.NUMPAD2);
             }
         }
 
@@ -373,7 +369,43 @@ namespace MemoryAPI.Memory
                 var status = (EntityStatus)_api.GetCachedEntity(id).Status;
                 return Helpers.ToStatus(status);
             }
+
+            public void MenuSequence(string npcName, int[] optionsSequence)
+            {
+                // Press escape a bunch in case we accidentally opened another menu.
+                for(int i = 0; i < 4; i++)
+                {
+                    _api.ThirdParty.KeyPress(Keys.ESCAPE);
+                    Thread.Sleep(500);
+                }
+                _api.ThirdParty.SendString("/targetnpc");
+
+                Thread.Sleep(2000);
+
+                _api.ThirdParty.KeyPress(Keys.RETURN);
+
+                // Sometimes if menus check KI, then opening the NPC/menu page takes
+                // a large delay. So erring on caution and just waiting longer than necessary.
+                Thread.Sleep(10000);
+
+                if(_api.Target.GetTargetInfo().TargetName == npcName && _api.Menu.IsMenuOpen)
+                {
+                    for (int i = 0; i < optionsSequence.Length; i++)
+                    {
+                        _api.Menu.MenuIndex = optionsSequence[i];
+                        Thread.Sleep(500);
+                        _api.ThirdParty.KeyPress(Keys.RETURN);
+                        Thread.Sleep(3000);
+                    }
+                }
+            }
+
+            public void EscapeMenu()
+            {
+                _api.ThirdParty.KeyPress(Keys.ESCAPE);
+            }
         }
+     
 
         public class PartyMemberTools : IPartyMemberTools
         {
@@ -520,6 +552,10 @@ namespace MemoryAPI.Memory
             public Job Job => (Job)_api.Player.MainJob;
 
             public Job SubJob => (Job)_api.Player.SubJob;
+
+            public bool HasKeyItem(uint id) => _api.Player.HasKeyItem(id);
+
+            public int MeritCount() => _api.Player.MeritPoints;
         }
 
         public class TargetTools : ITargetTools

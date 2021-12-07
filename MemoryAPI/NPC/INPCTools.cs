@@ -35,5 +35,7 @@ namespace MemoryAPI
         float PosZ(int id);
         Status Status(int id);
         int PetID(int id);
+        void MenuSequence(string npcName, int[] optionsSequence);
+        void EscapeMenu();
     }
 }

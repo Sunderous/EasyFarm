@@ -38,6 +38,8 @@ namespace EasyFarm.States
             // Make sure we don't need trusts
             if (new SummonTrustsState().Check(context)) return false;
 
+            if (new WarpHomeState().Check(context)) return false;
+
             // Target dead or null.
             if (!context.Target.IsValid) return false;
 

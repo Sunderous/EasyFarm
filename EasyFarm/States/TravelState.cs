@@ -25,6 +25,8 @@ namespace EasyFarm.States
 {
     public class TravelState : BaseState
     {
+        private Position lastPosition;
+
         public override bool Check(IGameContext context)
         {
             // Waypoint list is empty.
@@ -47,6 +49,8 @@ namespace EasyFarm.States
             // We don't need to summon trusts
             if (new SummonTrustsState().Check(context)) return false;
 
+            if (new WarpHomeState().Check(context)) return false;
+
             // We are not bound or struck by an other movement
             // disabling condition.
             if (ProhibitEffects.ProhibitEffectsMovement
@@ -60,14 +64,19 @@ namespace EasyFarm.States
         {
             var now = DateTime.Now;
 
+            // TODO: Figure out why this sometimes gets stuck running back and forth, almost
+            // as if the path is fluctuating between two waypoints.
             var currentPosition = context.Config.Route.GetCurrentPosition(context.API.Player.Position);
 
             // This threshold was 0.5 originally, since we now use follow though we can cause ourselves
             // to "hook" geometry if we start following the next point too early.
-            if (currentPosition == null || currentPosition.Distance(context.API.Player.Position) <= 1.0)
+            if (currentPosition == null || currentPosition.Distance(context.API.Player.Position) <= 3.0)
             {
+                //lastPosition = currentPosition;
                 currentPosition = context.Config.Route.GetNextPosition(context.API.Player.Position);
             }
+
+            //context.NavMesh.GoToPosition(context.API, currentPosition, true);
 
             var path = context.NavMesh.FindPathBetween(context.API.Player.Position, currentPosition);
 
@@ -75,7 +84,7 @@ namespace EasyFarm.States
             {
                 context.API.Navigator.DistanceTolerance = 1.0;
 
-                while (path.Count > 0 && path.Peek().Distance(context.API.Player.Position) <= context.API.Navigator.DistanceTolerance)
+                while (path.Count > 0 && path.Peek().Distance(context.API.Player.Position) <= 0.5)
                 {
                     path.Dequeue();
                 }

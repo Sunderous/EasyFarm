@@ -34,6 +34,7 @@ namespace EasyFarm.States
             if (context.IsFighting) return false;
             if (new RestState().Check(context)) return false;
             if (new SummonTrustsState().Check(context)) return false;
+            if (new WarpHomeState().Check(context)) return false;
             if (!context.Target.IsValid) return false;
             return context.Config.BattleLists["Pull"].Actions.Any(x => x.IsEnabled);
         }

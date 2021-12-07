@@ -224,9 +224,20 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Classes\NullUnit.cs" />
+    <Compile Include="States\FarmMeritsState.cs" />
+    <Compile Include="States\FightShinryuState.cs" />
+    <Compile Include="States\WarpToQufimState.cs" />
+    <Compile Include="States\BuyWyrmGemState.cs" />
+    <Compile Include="States\TakeIngressState.cs" />
+    <Compile Include="States\GetMollifierState.cs" />
+    <Compile Include="States\EnterShinryuState.cs" />
+    <Compile Include="States\EnterAbysseaParadoxState.cs" />
     <Compile Include="States\StateHistory.cs" />
     <Compile Include="States\StateLog.cs" />
     <Compile Include="States\StateStatus.cs" />
+    <Compile Include="States\EnterReisenjimaState.cs" />
+    <Compile Include="States\WarpHomeState.cs" />
+    <Compile Include="States\TeleportMeaState.cs" />
     <Compile Include="UserSettings\IConfig.cs" />
     <Compile Include="States\PlayerMovementTracker.cs" />
     <Compile Include="States\Route.cs" />

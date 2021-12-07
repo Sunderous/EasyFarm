@@ -101,6 +101,7 @@ namespace EasyFarm.States
         {
             if (new RestState().Check(context)) return false;
             if (!context.API.Player.Status.Equals(Status.Standing)) return false;
+            if (context.Zone == Zone.Port_Windurst) return false;
 
             var trusts = context.Config.BattleLists["Trusts"].Actions
                 .Where(t => t.IsEnabled)

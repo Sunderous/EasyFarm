@@ -10,7 +10,7 @@
     <ScrollViewer HorizontalScrollBarVisibility="Auto"
                   VerticalScrollBarVisibility="Auto">
         <StackPanel>
-            <Expander Header="Battle Settings" Margin="0, 5">
+            <Expander Header="Battle Settings" Margin="0, 5" Width="400">
                 <UniformGrid>
                     <CheckBox Content="Engage"
                       ToolTip="Sets whether the player should engage the target."
@@ -24,10 +24,14 @@
                       ToolTip="Sets whether the player should use tabbing for targeting."
                       IsChecked="{Binding EnableTabTargeting}" 
                       Margin="5, 5" />
+                    <CheckBox Content="Rotate 180"
+                      ToolTip="Sets whether the player should run 180 around mob after engaging"
+                      IsChecked="{Binding RotateAroundTarget}" 
+                      Margin="5, 5" />
                     <CheckBox Content="Home Point On Death"
                       ToolTip="Sets whether the player should return to homepoint on death."
                       IsChecked="{Binding HomePointOnDeath}"
-                      Margin="5, 5" />
+                      Margin="5,5,-20,5" />
                 </UniformGrid>
             </Expander>
             <Expander Header="Trust Settings" Margin="0, 5">

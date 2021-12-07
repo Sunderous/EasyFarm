@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using MemoryAPI;
 using MemoryAPI.Navigation;
 using SharpNav;
@@ -116,10 +117,10 @@ public class NavMesh
         var endPoint = snNavMeshQuery.FindNearestPoly(endSN, extents);
 
         SPath navPath = new SPath();
-        snNavMeshQuery.FindPath(ref startPoint, ref endPoint, new SharpNav.Pathfinding.NavQueryFilter(), navPath);
+        snNavMeshQuery.FindPath(ref startPoint, ref endPoint, new NavQueryFilter(), navPath);
 
         StraightPath straightPath = new StraightPath();
-        snNavMeshQuery.FindStraightPath(startSN, endSN, navPath, straightPath, PathBuildFlags.AllCrossingVertices);
+        snNavMeshQuery.FindStraightPath(startSN, endSN, navPath, straightPath, PathBuildFlags.None);
 
         if (straightPath.Count == 0)
         {
@@ -148,6 +149,35 @@ public class NavMesh
 
         return path;
 
+    }
+
+    public void GoToPosition(IMemoryAPI api, Position position, bool keepRunning = false)
+    {
+        var travelFps = (int)Math.Floor(1000.0 / 50.0);
+
+        api.Navigator.DistanceTolerance = 1.0;
+
+        var route = FindPathBetween(api.Player.Position, position);
+
+        while (route.Count > 0)
+        {
+            while (route.Count > 0 && route.Peek().Distance(api.Player.Position) <= api.Navigator.DistanceTolerance)
+            {
+                route.Dequeue();
+            }
+
+            if (route.Count > 0)
+            {
+                api.Navigator.GotoWaypoint(route.Peek(), true);
+            }
+
+            Thread.Sleep(travelFps);
+        }
+
+        if(!keepRunning)
+        {
+            api.Navigator.CancelFollow();
+        }
     }
 
     public Position NextRandomPosition(Position start)
