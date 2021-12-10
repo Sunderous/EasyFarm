@@ -43,6 +43,7 @@ namespace EasyFarm.States
             _context = new GameContext(fface);
 
             //Create the states
+            AddState(new MeritTrustsState() { Priority = 9 });
             AddState(new FarmMeritsState() { Priority = 9 });
             AddState(new FightShinryuState() { Priority = 8 });
             AddState(new GetMollifierState() { Priority = 8 });
@@ -54,8 +55,8 @@ namespace EasyFarm.States
             AddState(new WarpHomeState() { Priority = 8 });
             AddState(new TakeIngressState() { Priority = 8 });
             AddState(new TeleportMeaState() { Priority = 8 });
-            AddState(new DeadState() { Priority = 9 });
-            AddState(new ZoneState() {Priority = 9});
+            AddState(new DeadState() { Priority = 10 });
+            AddState(new ZoneState() {Priority = 10});
             AddState(new SetTargetState() { Priority = 7 });
             AddState(new SetFightingState() { Priority = 7 });
             AddState(new FollowState() { Priority = 5 });
@@ -179,7 +180,7 @@ namespace EasyFarm.States
                 // Use more responsive loop timer for travel.
                 // FIXME: use time delta since previous loop to make this more consistent.
 
-                var travelFps = (int)Math.Floor(1000.0 / 60.0);
+                var travelFps = (int)Math.Floor(1000.0 / 20.0);
                 var generalFps = 1000 / 4;
                 var nextState = _states.Skip(1).First();
 

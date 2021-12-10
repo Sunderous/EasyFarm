@@ -51,7 +51,7 @@ namespace EasyFarm.States
             // Options = [ 2 ]
             if (context.API.Player.Position.Distance(portalPosition) <= 3)
             {
-                context.API.NPC.MenuSequence("Dimensional Portal", new int[] { 2 });
+                context.API.NPC.MenuSequence("Dimensional Portal", new int[] { -2 });
             }
         }
     }

@@ -153,7 +153,7 @@ public class NavMesh
 
     public void GoToPosition(IMemoryAPI api, Position position, bool keepRunning = false)
     {
-        var travelFps = (int)Math.Floor(1000.0 / 50.0);
+        var travelFps = (int)Math.Floor(1000.0 / 20.0);
 
         api.Navigator.DistanceTolerance = 1.0;
 

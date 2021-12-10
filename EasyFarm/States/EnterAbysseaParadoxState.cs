@@ -48,7 +48,7 @@ namespace EasyFarm.States
             // Options = [ 1 ]
             if (context.API.Player.Position.Distance(paradoxPortal) <= 3)
             {
-                context.API.NPC.MenuSequence("Transcendental Radiance", new int[] { 1 });
+                context.API.NPC.MenuSequence("Transcendental Radiance", new int[] { -2 });
             }
         }
     }

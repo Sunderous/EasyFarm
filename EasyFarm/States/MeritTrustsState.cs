@@ -15,16 +15,21 @@
 // You should have received a copy of the GNU General Public License
 // If not, see <http://www.gnu.org/licenses/>.
 // ///////////////////////////////////////////////////////////////////
+using EasyFarm.Classes;
 using EasyFarm.Context;
+using EasyFarm.Persistence;
+using EasyFarm.UserSettings;
 using MemoryAPI;
+using System.IO;
+using System.Linq;
 using System.Threading;
 
 namespace EasyFarm.States
 {
     /// <summary>
-    ///     Enters Reisenjima after we've teleported to the canyon.
+    ///     Enters Shinryu fight after we zone into paradox
     /// </summary>
-    public class GetMollifierState : BaseState
+    public class MeritTrustsState : BaseState
     {
         public override bool Check(IGameContext context)
         {
@@ -32,42 +37,25 @@ namespace EasyFarm.States
             if (context.Zone != Zone.Reisenjima)
                 return false;
 
-            // If we already have the mollifier.
-            if (context.API.Player.HasKeyItem(3032))
+            if (new GetMollifierState().Check(context))
                 return false;
 
-            return true;
+            if (new TakeIngressState().Check(context))
+                return false;
+
+            return context.Player.Status.Equals(Status.Standing) && context.API.PartyMember.Count(pm => pm.Value.UnitPresent) < 6;
         }
 
-        public override void Run(IGameContext context)
+        // If we exit, and don't have the KI anymore, we need to load the settings for the fight.
+        public override void Enter(IGameContext context)
         {
-            // TODO: How to account for elvorseal? Packets necessary?
-            // Buy Mollifier
-            // Name = Shiftrix
-            // Options = [ 3, 4, 1 ]
-
-            // TODO: This is targeting players, sometimes when finishing the menu selection.
-            // And not getting mollifier even when elvorseal up.
-            context.API.NPC.MenuSequence("Shiftrix", new int[] { 3, 4, -2 });
-
-            Thread.Sleep(2000);
-
-            context.API.NPC.EscapeMenu();
-
-            Thread.Sleep(3000);
-
-            if (context.API.Player.HasKeyItem(3261))
-            {
-                return;
-            }
-
-            // If we do the first sequence and don't have the KI, then elvorseal probably
-            // an option.
-            context.API.NPC.MenuSequence("Shiftrix", new int[] { 4, 4, -2});
-
-            Thread.Sleep(2000);
-
-            context.API.NPC.EscapeMenu();
+            var persister = new Persister();
+            var fileName = $"trusts.eup";
+            if (string.IsNullOrWhiteSpace(fileName)) return;
+            if (!File.Exists(fileName)) return;
+            var config = persister.Deserialize<Config>(fileName);
+            Config.Instance = config;
+            AppServices.SendConfigLoaded();
         }
     }
 }

@@ -391,9 +391,32 @@ namespace MemoryAPI.Memory
                 if(_api.Target.GetTargetInfo().TargetName == npcName && _api.Menu.IsMenuOpen)
                 {
                     for (int i = 0; i < optionsSequence.Length; i++)
-                    {
-                        _api.Menu.MenuIndex = optionsSequence[i];
-                        Thread.Sleep(500);
+                    {                   
+                        if(optionsSequence[i] > 0)
+                        {
+                            // Switching from what was 1-indexed, to now kinda 0 indexed
+                            // when using arrow keys instead.
+                            var option = optionsSequence[i] - 1;
+
+                            for (int j = option; j > 0; j--)
+                            {
+                                _api.ThirdParty.KeyPress(Keys.DOWN);
+                                Thread.Sleep(1000);
+                            }
+                        }
+                        else
+                        {
+                            var option = optionsSequence[i] + 1;
+
+                            for (int j = option; j < 0; j++)
+                            {
+                                _api.ThirdParty.KeyPress(Keys.UP);
+                                Thread.Sleep(1000);
+                            }
+                        }
+
+                        //_api.Menu.MenuIndex = optionsSequence[i];
+                        //Thread.Sleep(500);
                         _api.ThirdParty.KeyPress(Keys.RETURN);
                         Thread.Sleep(3000);
                     }

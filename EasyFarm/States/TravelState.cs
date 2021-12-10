@@ -70,7 +70,7 @@ namespace EasyFarm.States
 
             // This threshold was 0.5 originally, since we now use follow though we can cause ourselves
             // to "hook" geometry if we start following the next point too early.
-            if (currentPosition == null || currentPosition.Distance(context.API.Player.Position) <= 3.0)
+            if (currentPosition == null || currentPosition.Distance(context.API.Player.Position) <= 5.0)
             {
                 //lastPosition = currentPosition;
                 currentPosition = context.Config.Route.GetNextPosition(context.API.Player.Position);
@@ -82,9 +82,9 @@ namespace EasyFarm.States
 
             if (path.Count > 0)
             {
-                context.API.Navigator.DistanceTolerance = 1.0;
+                context.API.Navigator.DistanceTolerance = 1.5;
 
-                while (path.Count > 0 && path.Peek().Distance(context.API.Player.Position) <= 0.5)
+                while (path.Count > 0 && path.Peek().Distance(context.API.Player.Position) <= context.API.Navigator.DistanceTolerance)
                 {
                     path.Dequeue();
                 }

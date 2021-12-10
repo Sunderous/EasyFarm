@@ -224,6 +224,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Classes\NullUnit.cs" />
+    <Compile Include="States\MeritTrustsState.cs" />
     <Compile Include="States\FarmMeritsState.cs" />
     <Compile Include="States\FightShinryuState.cs" />
     <Compile Include="States\WarpToQufimState.cs" />

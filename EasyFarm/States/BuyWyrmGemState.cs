@@ -19,6 +19,7 @@ using EasyFarm.Classes;
 using EasyFarm.Context;
 using EasyFarm.Persistence;
 using EasyFarm.UserSettings;
+using EliteMMO.API;
 using MemoryAPI;
 using MemoryAPI.Navigation;
 using System.IO;
@@ -62,6 +63,10 @@ namespace EasyFarm.States
 
         public override void Run(IGameContext context)
         {
+            // This is to ensure we don't get stuck in home point menu after warping
+            // back to town.
+            context.API.Windower.SendKeyPress(Keys.ESCAPE);
+
             // Move forward to portal.
             // X: 261.00595, Y: 35.1506, Z: 340.02786
             context.NavMesh.GoToPosition(context.API, vendorPosition);
@@ -71,7 +76,7 @@ namespace EasyFarm.States
             // Options = [ 2 ]
             if (context.API.Player.Position.Distance(vendorPosition) <= 3)
             {
-                context.API.NPC.MenuSequence("Mimble-Pimble", new int[] { 2, 2, 2, 1 });
+                context.API.NPC.MenuSequence("Mimble-Pimble", new int[] { 2, 2, 2, -2 });
             }
         }
     }

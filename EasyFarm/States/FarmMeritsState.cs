@@ -21,6 +21,7 @@ using EasyFarm.Persistence;
 using EasyFarm.UserSettings;
 using MemoryAPI;
 using System.IO;
+using System.Linq;
 using System.Threading;
 
 namespace EasyFarm.States
@@ -42,10 +43,11 @@ namespace EasyFarm.States
             if (new TakeIngressState().Check(context))
                 return false;
 
-            if (context.API.PartyMember[1] == null || context.API.PartyMember[1].Name == "Monberaux")
+            // If we've got all our trusts out don't enter this state.
+            if(context.API.PartyMember.Count(pm => pm.Value.UnitPresent) < 6)
                 return false;
 
-            return context.Player.Status.Equals(Status.Standing);
+            return Config.Instance.Route.Waypoints.Count == 0;
         }
 
         // If we exit, and don't have the KI anymore, we need to load the settings for the fight.
@@ -58,10 +60,6 @@ namespace EasyFarm.States
             var config = persister.Deserialize<Config>(fileName);
             Config.Instance = config;
             AppServices.SendConfigLoaded();
-
-            Thread.Sleep(5000);
-
-            config.Route = persister.Deserialize<Route>("reisen_frogs_15.ewl");
         }
     }
 }
