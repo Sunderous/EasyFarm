@@ -74,9 +74,11 @@ namespace EasyFarm.States
             // Enter portal.
             // Name = Dimensional Portal
             // Options = [ 2 ]
+
             if (context.API.Player.Position.Distance(vendorPosition) <= 3)
             {
-                context.API.NPC.MenuSequence("Mimble-Pimble", new int[] { 2, 2, 2, -2 });
+                //context.API.NPC.MenuSequence("Mimble-Pimble", new int[] { 2, 2, 2, -2 });
+                context.API.Windower.SendString("//htmb");
             }
         }
     }

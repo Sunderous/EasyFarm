@@ -76,6 +76,7 @@ namespace EasyFarm.States
         // that we cancel follow when we un-engage or we won't move.
         public override void Exit(IGameContext context)
         {
+            context.Config.Route.ResetCurrentWaypoint();
             context.API.Navigator.CancelFollow();
             KillCount++;
         }

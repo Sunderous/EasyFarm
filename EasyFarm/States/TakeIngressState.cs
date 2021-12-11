@@ -22,6 +22,7 @@ using EasyFarm.UserSettings;
 using MemoryAPI;
 using MemoryAPI.Navigation;
 using System.IO;
+using System.Threading;
 
 namespace EasyFarm.States
 {
@@ -57,7 +58,9 @@ namespace EasyFarm.States
             // Options = [ 2, 5, 1 ]
             if (context.API.Player.Position.Distance(firstIngressPosition) <= 3)
             {
-                context.API.NPC.MenuSequence("Ethereal Ingress #1", new int[] { 2, 5, -2 });
+                // context.API.NPC.MenuSequence("Ethereal Ingress #1", new int[] { 2, 5, -2 });
+                context.API.Windower.SendString("//ew 5");
+                Thread.Sleep(5000);
             }
         }
 

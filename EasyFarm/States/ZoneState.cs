@@ -52,6 +52,9 @@ namespace EasyFarm.States
             // Set new currentZone.
             context.Zone = context.Player.Zone;
 
+            // Reset route.
+            context.Config.Route.Reset();
+
             // Stop program from running to next waypoint.
             context.API.Navigator.Reset();
 

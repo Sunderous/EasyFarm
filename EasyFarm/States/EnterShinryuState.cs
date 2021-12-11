@@ -22,6 +22,7 @@ using EasyFarm.UserSettings;
 using MemoryAPI;
 using MemoryAPI.Navigation;
 using System.IO;
+using System.Threading;
 
 namespace EasyFarm.States
 {
@@ -58,7 +59,9 @@ namespace EasyFarm.States
             // Options = [ 3, 3 ]
             if(context.API.Player.Position.Distance(entrance) <= 3)
             {
-                context.API.NPC.MenuSequence("Transcendental Radiance", new int[] { 3, -2});
+                context.API.NPC.MenuSequence("Transcendental Radiance", new int[] { 3, 2});
+                //context.API.Windower.SendString("//shin enter VE");
+                Thread.Sleep(5000);
             }
 
         }

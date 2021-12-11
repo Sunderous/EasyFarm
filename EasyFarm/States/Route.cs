@@ -27,11 +27,12 @@ namespace EasyFarm.States
 {
     public class Route
     {
-        private int _position = -1;
+        private int _position = 0;
 
         public bool StraightRoute = true;
         public ObservableCollection<Position> Waypoints = new ObservableCollection<Position>();
         public Zone Zone { get; set; }
+        private Dictionary<int, DateTime> visitTimes = new Dictionary<int, DateTime>();
 
         public bool IsPathSet => Waypoints.Any();
 
@@ -57,6 +58,8 @@ namespace EasyFarm.States
 
         public Position GetNextPosition(Position playerPosition)
         {
+            var positionVisited = true;
+
             if (Waypoints.Count <= 0)
             {
                 return null;
@@ -67,12 +70,28 @@ namespace EasyFarm.States
                 return Waypoints[_position];
             }
 
-            var closest = Waypoints
-                .OrderBy(x => Distance(playerPosition, x)).FirstOrDefault();
+            var byDistance = Waypoints.OrderBy(x => Distance(playerPosition, x)).ToArray();
+
+            // Tracking when we visit waypoints is the non-geometry way I could come up with
+            // to avoid backtracking after every fight a lot of the time.
+            var closest = byDistance[0];
+            var nextClosest = byDistance[1];
+
+            var closestIndex = Waypoints.IndexOf(closest);
+            var nextClosestIndex = Waypoints.IndexOf(nextClosest);
+
+            var closestVisit = visitTimes.Keys.Contains(closestIndex) ? visitTimes[closestIndex] : DateTime.MinValue;
+            var nextClosestVisit = visitTimes.Keys.Contains(nextClosestIndex) ? visitTimes[nextClosestIndex] : DateTime.MinValue;
+
+            if (closestVisit > nextClosestVisit)
+            {
+                closest = nextClosest;
+            }
 
             if (_position == -1)
             {
                 _position = Waypoints.IndexOf(closest);
+                positionVisited = false;
             }
             else if (_position == Waypoints.Count)
             {
@@ -92,6 +111,10 @@ namespace EasyFarm.States
 
             var newPosition = Waypoints[_position];
 
+            if (positionVisited) { 
+                visitTimes[_position] = DateTime.Now;
+            }
+
             EasyFarm.ViewModels.LogViewModel.Write("Navigating to waypoint ("+_position+") " + newPosition.ToString());
 
             _position++;
@@ -107,8 +130,9 @@ namespace EasyFarm.States
         public void Reset()
         {
             Waypoints.Clear();
+            visitTimes.Clear();
             Zone = Zone.Unknown;
-            _position = -1;
+            _position = 0;
         }
 
         public bool IsWithinDistance(Position position, double distance)

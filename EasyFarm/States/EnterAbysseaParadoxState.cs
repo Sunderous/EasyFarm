@@ -18,6 +18,7 @@
 using EasyFarm.Context;
 using MemoryAPI;
 using MemoryAPI.Navigation;
+using System.Threading;
 
 namespace EasyFarm.States
 {
@@ -48,7 +49,9 @@ namespace EasyFarm.States
             // Options = [ 1 ]
             if (context.API.Player.Position.Distance(paradoxPortal) <= 3)
             {
-                context.API.NPC.MenuSequence("Transcendental Radiance", new int[] { -2 });
+                //context.API.NPC.MenuSequence("Transcendental Radiance", new int[] { -2 });
+                context.API.Windower.SendString("//ab enter");
+                Thread.Sleep(5000);
             }
         }
     }

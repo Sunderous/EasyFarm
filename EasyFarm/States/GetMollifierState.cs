@@ -48,26 +48,32 @@ namespace EasyFarm.States
 
             // TODO: This is targeting players, sometimes when finishing the menu selection.
             // And not getting mollifier even when elvorseal up.
-            context.API.NPC.MenuSequence("Shiftrix", new int[] { 3, 4, -2 });
+            //context.API.NPC.MenuSequence("Shiftrix", new int[] { 3, 4, -2 });
 
-            Thread.Sleep(2000);
+            //Thread.Sleep(2000);
 
-            context.API.NPC.EscapeMenu();
+            //context.API.NPC.EscapeMenu();
 
-            Thread.Sleep(3000);
+            //Thread.Sleep(3000);
 
-            if (context.API.Player.HasKeyItem(3261))
-            {
-                return;
-            }
+            //if (context.API.Player.HasKeyItem(3261))
+            //{
+            //    return;
+            //}
 
-            // If we do the first sequence and don't have the KI, then elvorseal probably
-            // an option.
-            context.API.NPC.MenuSequence("Shiftrix", new int[] { 4, 4, -2});
+            //// If we do the first sequence and don't have the KI, then elvorseal probably
+            //// an option.
+            //context.API.NPC.MenuSequence("Shiftrix", new int[] { 4, 4, -2});
 
-            Thread.Sleep(2000);
+            //Thread.Sleep(2000);
 
-            context.API.NPC.EscapeMenu();
+            //context.API.NPC.EscapeMenu();
+
+            Thread.Sleep(10000);
+
+            context.API.Windower.SendString("//ew domain mollifier");
+
+            Thread.Sleep(5000);
         }
     }
 }

@@ -391,34 +391,25 @@ namespace MemoryAPI.Memory
                 if(_api.Target.GetTargetInfo().TargetName == npcName && _api.Menu.IsMenuOpen)
                 {
                     for (int i = 0; i < optionsSequence.Length; i++)
-                    {                   
-                        if(optionsSequence[i] > 0)
-                        {
-                            // Switching from what was 1-indexed, to now kinda 0 indexed
-                            // when using arrow keys instead.
-                            var option = optionsSequence[i] - 1;
+                    {             
+                        
+                        var option = optionsSequence[i];
 
-                            for (int j = option; j > 0; j--)
-                            {
-                                _api.ThirdParty.KeyPress(Keys.DOWN);
-                                Thread.Sleep(1000);
-                            }
-                        }
-                        else
-                        {
-                            var option = optionsSequence[i] + 1;
+                        _api.Menu.MenuIndex = option;
+                        Thread.Sleep(2000); 
 
-                            for (int j = option; j < 0; j++)
-                            {
-                                _api.ThirdParty.KeyPress(Keys.UP);
-                                Thread.Sleep(1000);
-                            }
+                        // Very rarely the menu index doesn't get set properly for some reason.
+                        // Maybe the game just doesn't register it if it hits a certain timing.
+                        // This makes sure if we didn't actually set the index, we retry the same
+                        // value again until we do.
+                        if(_api.Menu.MenuIndex != option)
+                        {
+                            i--;
+                            continue;
                         }
 
-                        //_api.Menu.MenuIndex = optionsSequence[i];
-                        //Thread.Sleep(500);
                         _api.ThirdParty.KeyPress(Keys.RETURN);
-                        Thread.Sleep(3000);
+                        Thread.Sleep(4000);
                     }
                 }
             }
