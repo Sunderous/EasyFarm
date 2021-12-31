@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using EasyFarm.Classes;
 using MemoryAPI;
 using MemoryAPI.Navigation;
 using SharpNav;
@@ -153,7 +154,12 @@ public class NavMesh
 
     public void GoToPosition(IMemoryAPI api, Position position, bool keepRunning = false)
     {
-        var travelFps = (int)Math.Floor(1000.0 / 20.0);
+        if(_zone != api.Player.Zone)
+        {
+            return;
+        }
+
+        var travelFps = (int)Math.Floor(1000.0 / 45.0);
 
         api.Navigator.DistanceTolerance = 1.0;
 
@@ -171,7 +177,7 @@ public class NavMesh
                 api.Navigator.GotoWaypoint(route.Peek(), true);
             }
 
-            Thread.Sleep(travelFps);
+            TimeWaiter.Pause(travelFps);
         }
 
         if(!keepRunning)

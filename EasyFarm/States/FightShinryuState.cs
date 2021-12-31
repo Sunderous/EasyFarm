@@ -52,7 +52,7 @@ namespace EasyFarm.States
         public override void Enter(IGameContext context)
         {
             var persister = new Persister();
-            var fileName = $"shinryu.eup";
+            var fileName = $"shinryu_easy.eup";
             if (string.IsNullOrWhiteSpace(fileName)) return;
             if (!File.Exists(fileName)) return;
             var config = persister.Deserialize<Config>(fileName);

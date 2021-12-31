@@ -71,7 +71,7 @@ namespace EasyFarm.States
 
             Thread.Sleep(10000);
 
-            context.API.Windower.SendString("//ew domain mollifier");
+            context.API.Windower.SendString("//sparks buyki mollifier");
 
             Thread.Sleep(5000);
         }

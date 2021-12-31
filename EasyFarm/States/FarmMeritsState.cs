@@ -54,7 +54,7 @@ namespace EasyFarm.States
         public override void Enter(IGameContext context)
         {
             var persister = new Persister();
-            var fileName = $"toads.eup";
+            var fileName = $"toads_brd_nin.eup";
             if (string.IsNullOrWhiteSpace(fileName)) return;
             if (!File.Exists(fileName)) return;
             var config = persister.Deserialize<Config>(fileName);

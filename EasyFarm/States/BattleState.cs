@@ -88,7 +88,7 @@ namespace EasyFarm.States
             // whatever we actually have targetted. Also keeps us near the mob if we
             // get knocked back.
             if (context.Player.Status == Status.Fighting)
-            {
+            {          
                 context.API.Windower.SendString("/attack <t>");
             }
 

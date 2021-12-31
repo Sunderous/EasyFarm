@@ -39,6 +39,15 @@ namespace EasyFarm.States
             if (new SummonTrustsState().Check(context))
                 return false;
 
+            // By not setting target when approaching/fighting
+            // hopefully will cut down on having the wrong
+            // target selected sometimes.
+            if (new ApproachState().Check(context))
+                return false;
+
+            if (new BattleState().Check(context))
+                return false;
+
             return shouldCheck;
         }
 
@@ -53,14 +62,14 @@ namespace EasyFarm.States
             // Set our new target at the end so that we don't accidentally cast on a new target.
             var target = mobs.FirstOrDefault() ?? new NullUnit();
 
-            if (target.IsValid && lastTarget != target)
+            if (target.IsValid)
             {
                 context.Target = target;
 
                 // FIXME: if random path is set, do not reset? make this configurable?
                 //context.Config.Route.ResetCurrentWaypoint();
 
-                LogViewModel.Write("Now targeting " + context.Target.Name + " : " + context.Target.Id);
+                //LogViewModel.Write("Now targeting " + context.Target.Name + " : " + context.Target.Id);
             }
 
             Player.SetTarget(context.API, target);

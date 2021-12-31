@@ -307,7 +307,7 @@ namespace MemoryAPI.Memory
             public void Reset()
             {
                 _api.AutoFollow.IsAutoFollowing = false;
-                ResetFacing();
+                //ResetFacing();
             }
         }
 
@@ -386,7 +386,7 @@ namespace MemoryAPI.Memory
 
                 // Sometimes if menus check KI, then opening the NPC/menu page takes
                 // a large delay. So erring on caution and just waiting longer than necessary.
-                Thread.Sleep(10000);
+                Thread.Sleep(5000);
 
                 if(_api.Target.GetTargetInfo().TargetName == npcName && _api.Menu.IsMenuOpen)
                 {
@@ -409,7 +409,7 @@ namespace MemoryAPI.Memory
                         }
 
                         _api.ThirdParty.KeyPress(Keys.RETURN);
-                        Thread.Sleep(4000);
+                        Thread.Sleep(3000);
                     }
                 }
             }

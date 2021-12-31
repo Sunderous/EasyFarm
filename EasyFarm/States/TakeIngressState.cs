@@ -60,7 +60,7 @@ namespace EasyFarm.States
             {
                 // context.API.NPC.MenuSequence("Ethereal Ingress #1", new int[] { 2, 5, -2 });
                 context.API.Windower.SendString("//ew 5");
-                Thread.Sleep(5000);
+                Thread.Sleep(2000);
             }
         }
 

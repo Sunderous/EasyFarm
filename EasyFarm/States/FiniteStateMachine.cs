@@ -45,6 +45,7 @@ namespace EasyFarm.States
             //Create the states
             AddState(new MeritTrustsState() { Priority = 9 });
             AddState(new FarmMeritsState() { Priority = 9 });
+            AddState(new ChangeJobsState() { Priority = 9 });
             AddState(new FightShinryuState() { Priority = 8 });
             AddState(new GetMollifierState() { Priority = 8 });
             AddState(new EnterReisenjimaState() { Priority = 8 });
@@ -180,7 +181,7 @@ namespace EasyFarm.States
                 // Use more responsive loop timer for travel.
                 // FIXME: use time delta since previous loop to make this more consistent.
 
-                var travelFps = (int)Math.Floor(1000.0 / 20.0);
+                var travelFps = (int)Math.Floor(1000.0 / 45.0);
                 var generalFps = 1000 / 4;
                 var nextState = _states.Skip(1).First();
 

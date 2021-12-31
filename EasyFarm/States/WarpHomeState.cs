@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // If not, see <http://www.gnu.org/licenses/>.
 // ///////////////////////////////////////////////////////////////////
+using System.Linq;
 using System.Threading;
 using EasyFarm.Context;
 using MemoryAPI;
@@ -32,24 +33,37 @@ namespace EasyFarm.States
         public override bool Check(IGameContext context)
         {
             // If we aren't in the paradox.
-            if (context.Zone != Zone.Reisenjima)
-                return false;
+            if (context.Zone != Zone.Reisenjima && context.Zone != Zone.Abyssea_Empyreal_Paradox)
+                return false; 
 
             // If we're still fighting.
             if (context.IsFighting)
                 return false;
+            
+            if(context.Zone == Zone.Reisenjima)
+            {
+                if (context.API.Player.Position.Distance(firstIngressPosition) < 20)
+                    return false;
 
-            if (context.API.Player.Position.Distance(firstIngressPosition) < 20)
-                return false;
+                // If We're in the zone, standing, with the key item gone and no level restriction,
+                // it means the fight is over and we're good to teleport out.
 
-            // If We're in the zone, standing, with the key item gone and no level restriction,
-            // it means the fight is over and we're good to teleport out.
+                //return context.API.Player.Status.Equals(Status.Standing) && context.API.Player.MeritCount() >= 30;
 
-            //return context.API.Player.Status.Equals(Status.Standing) && context.API.Player.MeritCount() >= 30;
+                // TODO: This kill count is a hack, but the API is currently broken so we can't read our Merit count
+                // to determine when to warp back. So we approximate it with this, will fix when API is fixed.
+                return context.API.Player.Status.Equals(Status.Standing) && BattleState.KillCount >= 26;
+            }
+            else
+            {
+                // 3261 = Wyrm god phantom gem
+                // If we haven't turned in the key item yet.
+                if (context.API.Player.HasKeyItem(3261))
+                    return false;
 
-            // TODO: This kill count is a hack, but the API is currently broken so we can't read our Merit count
-            // to determine when to warp back. So we approximate it with this, will fix when API is fixed.
-            return context.API.Player.Status.Equals(Status.Standing) && BattleState.KillCount >= 55;
+                // If we still have our level restriction.
+                return !context.API.Player.StatusEffects.Contains(StatusEffect.Level_Restriction);
+            }
         }
 
         public override void Run(IGameContext context)

@@ -27,14 +27,17 @@ namespace EasyFarm.States
     /// </summary>
     public class WarpToQufimState : BaseState
     {
-        Position homePointPosition = new Position() { X = 181.21f, Y = -12f, Z = 224.802f };
+        Position norgHPPosition = new Position() { X = -65.16393f, Y = -5.249864f, Z = 53.82993f };
 
         public override bool Check(IGameContext context)
         {
-            if (context.Zone != Zone.Port_Windurst)
+            if (context.Zone != Zone.Norg)
                 return false;
 
             if (!context.API.Player.HasKeyItem(3261))
+                return false;
+
+            if (new ChangeJobsState().Check(context))
                 return false;
 
 
@@ -44,13 +47,13 @@ namespace EasyFarm.States
         public override void Run(IGameContext context)
         {
 
-            context.NavMesh.GoToPosition(context.API, homePointPosition);
+            context.NavMesh.GoToPosition(context.API, norgHPPosition);
 
-            if (context.API.Player.Position.Distance(homePointPosition) <= 3)
+            if (context.API.Player.Position.Distance(norgHPPosition) <= 1.0)
             {
                 //context.API.NPC.MenuSequence("Home Point #3", new int[] { 1, 2, 2, -2 });
                 context.API.Windower.SendString("//hp qufim 1");
-                Thread.Sleep(5000);
+                Thread.Sleep(1000);
             }
         }
     }

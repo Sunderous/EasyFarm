@@ -42,6 +42,9 @@ namespace EasyFarm.States
             if (context.API.Player.HasKeyItem(3261))
                 return false;
 
+            if (context.API.Player.Job == ChangeJobsState.shinJob.Item1)
+                return false;
+
             return true;
         }
 

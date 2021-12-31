@@ -83,19 +83,23 @@ namespace EasyFarm.ViewModels
             Processes.AddRange(Process.GetProcesses()
                 .Where(x =>
                 {
-                    var isNotEmpty = !string.IsNullOrWhiteSpace(x.MainWindowTitle);
-
-                    try
+                    if (x != null && !string.IsNullOrWhiteSpace(x.MainWindowTitle))
                     {
-                        var hasFFXIMain = (from ProcessModule m in x.Modules where m.ModuleName.ToLower() == "ffximain.dll" select m).FirstOrDefault() != null;
-                        return isNotEmpty && hasFFXIMain;
-                    }
-                    catch
-                    {
-                        return false;
-                    }
+                        try
+                        {
+                            var ffxiModules = from ProcessModule m in x.Modules
+                                              where m.ModuleName.ToLower() == "ffximain.dll"
+                                              select m;
 
-                    return isNotEmpty;
+                            return ffxiModules != null && ffxiModules.Count() >= 1;
+                        }
+                        catch
+                        {
+                            return false;
+                        }
+                    }            
+
+                    return false;
                 })
                 .ToList());
         }

@@ -71,7 +71,7 @@ namespace EasyFarm.ViewModels
             LoadedCommand = new RelayCommand(OnLoad);
         }
 
-        private string _mainWindowTitle;
+        private string _mainWindowTitle = string.Empty;
 
         public string MainWindowTitle
         {

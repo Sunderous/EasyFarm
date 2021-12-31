@@ -34,15 +34,7 @@ namespace EasyFarm.States
         public override bool Check(IGameContext context)
         {
             // If we aren't in the paradox.
-            if (context.Zone != Zone.Abyssea_Empyreal_Paradox)
-                return false;
-
-            // If we're still fighting.
-            if (context.IsFighting)
-                return false;
-
-            // If we still have our level restriction.
-            if (context.API.Player.StatusEffects.Contains(StatusEffect.Level_Restriction))
+            if (context.Zone != Zone.Norg)
                 return false;
 
             // 3261 = Wyrm god phantom gem
@@ -52,7 +44,7 @@ namespace EasyFarm.States
 
             // If We're in the zone, standing, with the key item gone and no level restriction,
             // it means the fight is over and we're good to teleport out.
-            return context.API.Player.Status.Equals(Status.Standing);
+            return context.API.Player.Job == ChangeJobsState.meritJob.Item1 && context.API.Player.SubJob == ChangeJobsState.meritJob.Item2;
         }
 
         public override void Enter(IGameContext context)
