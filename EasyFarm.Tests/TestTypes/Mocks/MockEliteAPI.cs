@@ -71,7 +71,7 @@ namespace EasyFarm.Tests.TestTypes.Mocks
 
     public class MockChatTools : IChatTools
     {
-        public Queue<EliteAPI.ChatEntry> ChatEntries { get; set; } = new Queue<EliteAPI.ChatEntry>();
+        public FixedSizeQueue<EliteAPI.ChatEntry> ChatEntries { get; set; } = new FixedSizeQueue<EliteAPI.ChatEntry>(50);
     }
 
     public class MockTargetTools : ITargetTools
@@ -85,6 +85,8 @@ namespace EasyFarm.Tests.TestTypes.Mocks
             LastTargetID = index;
             return true;
         }
+
+        public bool LockedOn { get; set; }
     }
 
     public class MockTimerTools : ITimerTools
@@ -106,6 +108,7 @@ namespace EasyFarm.Tests.TestTypes.Mocks
     {
         public double DistanceTolerance { get; set; }
         public bool IsRunning { get; set; }
+        public bool IsStuck { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
         public void FaceHeading(Position position)
         {
@@ -124,6 +127,41 @@ namespace EasyFarm.Tests.TestTypes.Mocks
         public void Reset()
         {
             IsRunning = false;
+        }
+
+        public void FaceTarget()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void RotateAroundMob(float initialHeading)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool IsFollowing()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void CancelFollow()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void FaceHeading(Position position, bool isRunning)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void GotoWaypoint(Position position, bool keepRunning)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void GotoNPC(int ID, Position position, bool keepRunning)
+        {
+            throw new System.NotImplementedException();
         }
     }
 
@@ -238,6 +276,16 @@ namespace EasyFarm.Tests.TestTypes.Mocks
         {
             return Entities[id].PetID;
         }
+
+        public void MenuSequence(string npcName, int[] optionsSequence)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void EscapeMenu()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
     public class MockPlayerTools : IPlayerTools
@@ -259,6 +307,18 @@ namespace EasyFarm.Tests.TestTypes.Mocks
         public Zone Zone { get; set; }
         public Job Job { get; set; }
         public Job SubJob { get; set; }
+
+        public float Heading => throw new System.NotImplementedException();
+
+        public bool HasKeyItem(uint id)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public int MeritCount()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
     public class MockWindowerTools : IWindowerTools
@@ -298,6 +358,21 @@ namespace EasyFarm.Tests.TestTypes.Mocks
         {
             LastKeyPress = key;
             KeyPresses.Add(key);
+        }
+
+        public void SendHoldKey(Keys key, int milliseconds)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void SendKeyDown(Keys key)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void SendKeyUp(Keys key)
+        {
+            throw new System.NotImplementedException();
         }
     }
 

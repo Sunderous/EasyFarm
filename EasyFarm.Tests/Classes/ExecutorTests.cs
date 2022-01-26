@@ -21,6 +21,8 @@ using Xunit;
 using EasyFarm.Classes;
 using EasyFarm.Parsing;
 using EasyFarm.Tests.TestTypes;
+using EasyFarm.Tests.TestTypes.Mocks;
+using EasyFarm.Context;
 
 namespace EasyFarm.Tests.Classes
 {
@@ -39,7 +41,7 @@ namespace EasyFarm.Tests.Classes
             battleAbility.AbilityType = AbilityType.Magic;
             Executor sut = new Executor(MockGameAPI);
             // Exercise system
-            sut.UseBuffingActions(new List<BattleAbility> { battleAbility });
+            sut.UseBuffingActions(new List<BattleAbility> { battleAbility }, new MemoryAPI.Navigation.Position());
             // Verify outcome
             Assert.Equal("/magic test <t>", MockGameAPI.Mock.Windower.LastCommand);
             // Teardown
@@ -56,7 +58,7 @@ namespace EasyFarm.Tests.Classes
             IUnit unit = FindUnit();
             Executor sut = new Executor(MockGameAPI);
             // Exercise system
-            sut.UseTargetedActions(new List<BattleAbility> { battleAbility }, unit);
+            sut.UseTargetedActions(new GameContext(new MockGameAPI()), new List<BattleAbility> { battleAbility }, unit);
             // Verify outcome
             Assert.Equal("/magic test <t>", MockGameAPI.Mock.Windower.LastCommand);
             // Teardown
@@ -66,7 +68,7 @@ namespace EasyFarm.Tests.Classes
         public void UseBuffingActionsWithNullActionListThrows()
         {
             Executor sut = new Executor(MockGameAPI);
-            Exception result = Record.Exception(() => sut.UseBuffingActions(null));
+            Exception result = Record.Exception(() => sut.UseBuffingActions(null, new MemoryAPI.Navigation.Position()));
             Assert.IsType<ArgumentNullException>(result);
         }
     }

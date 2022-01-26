@@ -38,6 +38,8 @@ namespace EasyFarm.Tests.Context
 
         public MockEliteAPI MockAPI { get; set; }
 
+        public NavMesh NavMesh { get; set; }
+
         public TestContext()
         {
             Units = new List<IUnit> { new MockUnit() };
@@ -47,6 +49,7 @@ namespace EasyFarm.Tests.Context
             MockAPI = new MockEliteAPI();
             API = new MockEliteAPIAdapter(MockAPI);
             Memory = new StateMemory(API);
+            NavMesh = new NavMesh();
         }
 
         public void SetPlayerInjured()
