@@ -10,7 +10,7 @@
     <ScrollViewer HorizontalScrollBarVisibility="Auto"
                   VerticalScrollBarVisibility="Auto">
         <StackPanel>
-            <Expander Header="Battle Settings" Margin="0, 5" Width="400">
+            <Expander Header="Battle Settings" Margin="0, 5">
                 <UniformGrid>
                     <CheckBox Content="Engage"
                       ToolTip="Sets whether the player should engage the target."

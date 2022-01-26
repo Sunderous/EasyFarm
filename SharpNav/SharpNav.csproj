@@ -71,6 +71,52 @@
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;STANDALONE</DefineConstants>
+    <DocumentationFile>..\..\Binaries\SharpNav\Debug\SharpNav.XML</DocumentationFile>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Standalone|x86'">
+    <OutputPath>bin\x86\Standalone\</OutputPath>
+    <DefineConstants>TRACE;STANDALONE</DefineConstants>
+    <DocumentationFile>..\..\Binaries\SharpNav\Standalone\SharpNav.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'OpenTK|x86'">
+    <OutputPath>bin\x86\OpenTK\</OutputPath>
+    <DefineConstants>TRACE;OPENTK</DefineConstants>
+    <DocumentationFile>..\..\Binaries\SharpNav\OpenTK\SharpNav.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'SharpDX|x86'">
+    <OutputPath>bin\x86\SharpDX\</OutputPath>
+    <DefineConstants>TRACE;SHARPDX</DefineConstants>
+    <DocumentationFile>..\..\Binaries\SharpNav\SharpDX\SharpNav.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MonoGame|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\MonoGame\</OutputPath>
+    <DefineConstants>TRACE;MONOGAME</DefineConstants>
+    <DocumentationFile>..\..\Binaries\SharpNav\MonoGame\SharpNav.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
   <!-- Common items -->
   <ItemGroup>
     <Reference Include="System" />

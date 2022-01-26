@@ -19,13 +19,9 @@ using System.Linq;
 using EasyFarm.Classes;
 using MemoryAPI;
 using System;
-using EasyFarm.ViewModels;
-using System.Text.RegularExpressions;
-using System.Collections.Generic;
 using EasyFarm.Context;
 using EasyFarm.UserSettings;
 using Player = EasyFarm.Classes.Player;
-using System.Timers;
 
 namespace EasyFarm.States
 {
@@ -37,6 +33,8 @@ namespace EasyFarm.States
         private float initialHeading = 0.0f;
 
         public static float KillCount = 0;
+
+        private DateTime lastKill = DateTime.MinValue;
 
         public override bool Check(IGameContext context)
         {
@@ -59,7 +57,7 @@ namespace EasyFarm.States
                 return false;
 
             // Engage is enabled and we are not engaged. We cannot proceed. 
-            if (context.Config.IsEngageEnabled) 
+            if (context.Config.IsEngageEnabled)
                 return context.Player.Status.Equals(Status.Fighting);
 
             // Engage is not checked, so just proceed to battle. 
@@ -68,7 +66,7 @@ namespace EasyFarm.States
 
         public override void Enter(IGameContext context)
         {
-            Player.Stand(context.API);
+            //Player.Stand(context.API);
             initialHeading = context.API.Player.Heading;
         }
 
@@ -76,9 +74,15 @@ namespace EasyFarm.States
         // that we cancel follow when we un-engage or we won't move.
         public override void Exit(IGameContext context)
         {
-            context.Config.Route.ResetCurrentWaypoint();
+            //context.Config.Route.ResetCurrentWaypoint();
             context.API.Navigator.CancelFollow();
-            KillCount++;
+            
+            // Having this trigger too much, so going to try putting a limiter on it.
+            if((DateTime.Now - lastKill).TotalSeconds >= 5)
+            {
+                KillCount++;
+                lastKill = DateTime.Now;
+            }
         }
 
         public override void Run(IGameContext context)

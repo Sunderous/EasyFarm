@@ -39,6 +39,8 @@ namespace MemoryAPI.Memory
         {
             var eliteApi = new EliteAPI(pid);
 
+            MemoryService.Initialize("pol");
+
             Navigator = new NavigationTools(eliteApi);
             NPC = new NpcTools(eliteApi);
             PartyMember = new Dictionary<byte, IPartyMemberTools>();
@@ -569,7 +571,7 @@ namespace MemoryAPI.Memory
 
             public bool HasKeyItem(uint id) => _api.Player.HasKeyItem(id);
 
-            public int MeritCount() => _api.Player.MeritPoints;
+            public int MeritCount() => MemoryService.ReadMemory<byte>(0x4791E8);
         }
 
         public class TargetTools : ITargetTools

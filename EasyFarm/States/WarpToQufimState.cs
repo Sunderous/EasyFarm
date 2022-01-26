@@ -51,9 +51,8 @@ namespace EasyFarm.States
 
             if (context.API.Player.Position.Distance(norgHPPosition) <= 1.0)
             {
-                //context.API.NPC.MenuSequence("Home Point #3", new int[] { 1, 2, 2, -2 });
                 context.API.Windower.SendString("//hp qufim 1");
-                Thread.Sleep(1000);
+                Thread.Sleep(5000);
             }
         }
     }

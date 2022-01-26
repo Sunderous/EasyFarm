@@ -69,7 +69,7 @@ namespace EasyFarm.Classes
             if (!fface.Player.Status.Equals(Status.Fighting))
             {
                 fface.Windower.SendString(Constants.AttackTarget);
-                Thread.Sleep(500);
+                Thread.Sleep(250);
                 //fface.Windower.SendString(Constants.ToggleLockOn);
             }
         }

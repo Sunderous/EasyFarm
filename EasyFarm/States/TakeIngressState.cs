@@ -59,7 +59,7 @@ namespace EasyFarm.States
             if (context.API.Player.Position.Distance(firstIngressPosition) <= 3)
             {
                 // context.API.NPC.MenuSequence("Ethereal Ingress #1", new int[] { 2, 5, -2 });
-                context.API.Windower.SendString("//ew 5");
+                context.API.Windower.SendString("//ew 3");
                 Thread.Sleep(2000);
             }
         }

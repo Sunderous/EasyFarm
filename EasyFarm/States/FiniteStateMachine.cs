@@ -36,6 +36,7 @@ namespace EasyFarm.States
         private readonly List<IState> _states = new List<IState>();
         private CancellationTokenSource _cancellation = new CancellationTokenSource();
         public readonly GameContext _context;
+        private IState _lastState;
 
         public FiniteStateMachine(IMemoryAPI fface)
         {
@@ -43,13 +44,13 @@ namespace EasyFarm.States
             _context = new GameContext(fface);
 
             //Create the states
-            AddState(new MeritTrustsState() { Priority = 9 });
+            //AddState(new MeritTrustsState() { Priority = 9 });
             AddState(new FarmMeritsState() { Priority = 9 });
             AddState(new ChangeJobsState() { Priority = 9 });
             AddState(new FightShinryuState() { Priority = 8 });
             AddState(new GetMollifierState() { Priority = 8 });
             AddState(new EnterReisenjimaState() { Priority = 8 });
-            AddState(new EnterShinryuState() { Priority = 8 });
+            AddState(new EnterShinryuState() { Priority = 9 });
             AddState(new EnterAbysseaParadoxState() { Priority = 8 });
             AddState(new WarpToQufimState() { Priority = 8 });
             AddState(new BuyWyrmGemState() { Priority = 8 });
@@ -62,7 +63,7 @@ namespace EasyFarm.States
             AddState(new SetFightingState() { Priority = 7 });
             AddState(new FollowState() { Priority = 5 });
             AddState(new RestState() { Priority = 2 });
-            AddState(new SummonTrustsState() { Priority = 6 });
+            AddState(new SummonTrustsState() { Priority = 10 });
             AddState(new ApproachState() { Priority = 0 });
             AddState(new BattleState() { Priority = 3 });
             AddState(new WeaponskillState() { Priority = 2 });
@@ -152,7 +153,24 @@ namespace EasyFarm.States
                 // Sort the List, States may have updated Priorities.
                 _states.Sort();
 
-                // Find a State that says it needs to run.
+                //if (_lastState != null)
+                //{
+                //    _lastState.Exit(_context);
+                //    AppServices.InformUser("Exited " + _lastState.GetType().Name);
+                //}
+
+                //var targetState = _states.Where(state => state.Enabled).FirstOrDefault(state => state.Check(_context));
+
+                //_lastState = targetState;
+
+                //if(targetState != null)
+                //{
+                //    AppServices.InformUser("Running " + targetState.GetType().Name);
+                //    targetState.Enter(_context);
+                //    targetState.Run(_context);
+                //}
+
+                //// Find a State that says it needs to run.
                 foreach (var mc in _states.Where(x => x.Enabled).ToList())
                 {
                     _cancellation.Token.ThrowIfCancellationRequested();
@@ -181,7 +199,7 @@ namespace EasyFarm.States
                 // Use more responsive loop timer for travel.
                 // FIXME: use time delta since previous loop to make this more consistent.
 
-                var travelFps = (int)Math.Floor(1000.0 / 45.0);
+                var travelFps = (int)Math.Floor(1000.0 / 60.0);
                 var generalFps = 1000 / 4;
                 var nextState = _states.Skip(1).First();
 

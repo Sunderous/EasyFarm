@@ -41,7 +41,7 @@ namespace EasyFarm.States
             var zone = context.Player.Zone;
             //return ZoneChanged(zone, context.Zone) || IsZoning(context);
 
-            return zone != Zone.Unknown && ZoneChanged(zone, context.Zone);
+            return (zone != Zone.Unknown && ZoneChanged(zone, context.Zone)) || IsZoning(context);
         }
 
         private bool ZoneChanged(Zone currentZone, Zone lastZone)
@@ -51,6 +51,9 @@ namespace EasyFarm.States
 
         public override void Run(IGameContext context)
         {
+            // Wait until we are done zoning.
+            while (IsZoning(context)) ZoningAction();
+
             // Set new currentZone.
             context.Zone = context.Player.Zone;
 
@@ -62,12 +65,6 @@ namespace EasyFarm.States
 
             // Load new zone's nav mesh
             context.NavMesh.LoadZone(context.Zone);
-
-            // Wait until we are done zoning.
-            while (IsZoning(context)) ZoningAction();
-
-            // Load new zone's nav mesh
-            //context.NavMesh.LoadZone(context.Zone);
         }
     }
 }

@@ -20,9 +20,8 @@ using EasyFarm.Context;
 using EasyFarm.Persistence;
 using EasyFarm.UserSettings;
 using MemoryAPI;
+using MemoryAPI.Navigation;
 using System.IO;
-using System.Linq;
-using System.Threading;
 
 namespace EasyFarm.States
 {
@@ -31,6 +30,8 @@ namespace EasyFarm.States
     /// </summary>
     public class FarmMeritsState : BaseState
     {
+        Position firstIngressPosition = new Position() { X = -495.81787f, Y = -19.378101f, Z = -478.688f };
+
         public override bool Check(IGameContext context)
         {
             // If we aren't in zone
@@ -44,17 +45,19 @@ namespace EasyFarm.States
                 return false;
 
             // If we've got all our trusts out don't enter this state.
-            if(context.API.PartyMember.Count(pm => pm.Value.UnitPresent) < 6)
-                return false;
+            //if(context.API.PartyMember.Count(pm => pm.Value.UnitPresent) < 6)
+            //    return false;
 
-            return Config.Instance.Route.Waypoints.Count == 0;
+            //return Config.Instance.Route.Waypoints.Count == 0;
+            return context.API.Player.Position.Distance(firstIngressPosition) > 20;
         }
 
         // If we exit, and don't have the KI anymore, we need to load the settings for the fight.
         public override void Enter(IGameContext context)
         {
             var persister = new Persister();
-            var fileName = $"toads_brd_nin.eup";
+            //var fileName = $"toads_war_drg.eup";
+            var fileName = $"ingress_3.eup";
             if (string.IsNullOrWhiteSpace(fileName)) return;
             if (!File.Exists(fileName)) return;
             var config = persister.Deserialize<Config>(fileName);

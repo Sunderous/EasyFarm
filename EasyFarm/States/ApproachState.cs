@@ -75,13 +75,13 @@ namespace EasyFarm.States
 
                 // Has the user decided we should engage in battle. 
                 // Original Distance = 25
-                if (context.Target.Distance <= 7 && context.Config.IsEngageEnabled)
+                if (context.Target.Distance <= 5 && context.Config.IsEngageEnabled)
                     Player.Engage(context.API);
 
                 if (context.Target.Distance <= Config.Instance.MeleeDistance)
                 {
                     //context.API.Navigator.FaceHeading(context.Target.Position, false);
-                    context.API.Navigator.Reset();
+                    //context.API.Navigator.Reset();
                     // Want to make sure we lockon when we're within melee distance to ensure
                     // we always hit the mob and start combat state.
                     if (!context.Memory.EliteApi.Target.LockedOn)
@@ -92,7 +92,7 @@ namespace EasyFarm.States
                 else if (path.Count > 0)
                 {
                     // Originally was 3
-                    context.API.Navigator.DistanceTolerance = 1;
+                    context.API.Navigator.DistanceTolerance = 1.5;
 
                     while (path.Count > 0 && path.Peek().Distance(context.API.Player.Position) <= context.API.Navigator.DistanceTolerance)
                     {

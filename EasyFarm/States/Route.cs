@@ -56,70 +56,84 @@ namespace EasyFarm.States
             return Waypoints[_position];
         }
 
+        // Trying to simplify this by always just targeting the point that hasn't been visited in the longest.
         public Position GetNextPosition(Position playerPosition)
         {
-            var positionVisited = true;
 
-            if (Waypoints.Count <= 0)
+            var visitedPoints = Waypoints.Where(x => Distance(playerPosition, x) < 5);
+            foreach(Position p in visitedPoints)
             {
-                return null;
+                visitTimes[Waypoints.IndexOf(p)] = DateTime.Now;
             }
 
-            if (Waypoints.Count < 2 && _position > -1)
-            {
-                return Waypoints[_position];
-            }
+            var result = Waypoints.OrderBy(p => visitTimes.ContainsKey(Waypoints.IndexOf(p)) ? visitTimes[Waypoints.IndexOf(p)] : DateTime.MinValue).FirstOrDefault();
 
-            var byDistance = Waypoints.OrderBy(x => Distance(playerPosition, x)).ToArray();
+            _position = Waypoints.IndexOf(result);
 
-            // Tracking when we visit waypoints is the non-geometry way I could come up with
-            // to avoid backtracking after every fight a lot of the time.
-            var closest = byDistance[0];
-            var nextClosest = byDistance[1];
+            return result;
 
-            var closestIndex = Waypoints.IndexOf(closest);
-            var nextClosestIndex = Waypoints.IndexOf(nextClosest);
+            //var positionVisited = true;
 
-            var closestVisit = visitTimes.Keys.Contains(closestIndex) ? visitTimes[closestIndex] : DateTime.MinValue;
-            var nextClosestVisit = visitTimes.Keys.Contains(nextClosestIndex) ? visitTimes[nextClosestIndex] : DateTime.MinValue;
+            //if (Waypoints.Count <= 0)
+            //{
+            //    return null;
+            //}
 
-            if (closestVisit > nextClosestVisit)
-            {
-                closest = nextClosest;
-            }
+            //if (Waypoints.Count < 2 && _position > -1)
+            //{
+            //    return Waypoints[_position];
+            //}
 
-            if (_position == -1)
-            {
-                _position = Waypoints.IndexOf(closest);
-                positionVisited = false;
-            }
-            else if (_position == Waypoints.Count)
-            {
-                if (StraightRoute)
-                {
-                    Waypoints = new ObservableCollection<Position>(Waypoints.Reverse());
-                    EasyFarm.ViewModels.LogViewModel.Write("Reached the end of waypoints; reversing.");
-                }
-                else
-                {
-                    EasyFarm.ViewModels.LogViewModel.Write("Reached the end of waypoints; circling.");
-                }
+            //var byDistance = Waypoints.OrderBy(x => Distance(playerPosition, x)).ToArray();
 
-                _position = 0;
+            //// Tracking when we visit waypoints is the non-geometry way I could come up with
+            //// to avoid backtracking after every fight a lot of the time.
+            //var closest = byDistance[0];
+            //var nextClosest = byDistance[1];
 
-            }
+            //var closestIndex = Waypoints.IndexOf(closest);
+            //var nextClosestIndex = Waypoints.IndexOf(nextClosest);
 
-            var newPosition = Waypoints[_position];
+            //var closestVisit = visitTimes.Keys.Contains(closestIndex) ? visitTimes[closestIndex] : DateTime.MinValue;
+            //var nextClosestVisit = visitTimes.Keys.Contains(nextClosestIndex) ? visitTimes[nextClosestIndex] : DateTime.MinValue;
 
-            if (positionVisited) { 
-                visitTimes[_position] = DateTime.Now;
-            }
+            //if (closestVisit > nextClosestVisit)
+            //{
+            //    closest = nextClosest;
+            //}
 
-            EasyFarm.ViewModels.LogViewModel.Write("Navigating to waypoint ("+_position+") " + newPosition.ToString());
+            //if (_position == -1)
+            //{
+            //    _position = Waypoints.IndexOf(closest);
+            //    positionVisited = false;
+            //}
+            //else if (_position == Waypoints.Count)
+            //{
+            //    if (StraightRoute)
+            //    {
+            //        Waypoints = new ObservableCollection<Position>(Waypoints.Reverse());
+            //        EasyFarm.ViewModels.LogViewModel.Write("Reached the end of waypoints; reversing.");
+            //    }
+            //    else
+            //    {
+            //        EasyFarm.ViewModels.LogViewModel.Write("Reached the end of waypoints; circling.");
+            //    }
 
-            _position++;
+            //    _position = 0;
 
-            return newPosition;
+            //}
+
+            //var newPosition = Waypoints[_position];
+
+            //if (positionVisited) { 
+            //    visitTimes[_position] = DateTime.Now;
+            //}
+
+            //EasyFarm.ViewModels.LogViewModel.Write("Navigating to waypoint ("+_position+") " + newPosition.ToString());
+
+            //_position++;
+
+            //return newPosition;
         }
 
         private double Distance(Position one, Position other)

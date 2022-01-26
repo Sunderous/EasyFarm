@@ -37,15 +37,16 @@ namespace EasyFarm.States
         Position mooglePosition = new Position() { X = -58.862057f, Y = -5.035444f, Z = 52.59803f };
         Position portHPPosition = new Position() { X = 181.21f, Y = -12f, Z = 224.802f };
 
-        public static Tuple<Job, Job> meritJob = Tuple.Create(Job.Bard, Job.Ninja);
-        public static Tuple<Job, Job> shinJob = Tuple.Create(Job.Thief, Job.Dancer);
+        public static Tuple<Job, Job> meritJob = Tuple.Create(Job.Warrior, Job.Dragoon);
+        public static Tuple<Job, Job> shinJob = Tuple.Create(Job.Thief, Job.Warrior);
 
         Dictionary<Job, string> jobStrings = new Dictionary<Job, string>() {
             { Job.Bard, "brd" },
             { Job.Ninja, "nin" },
             { Job.Thief, "thf" },
             { Job.Dragoon, "drg" },
-            { Job.Dancer, "dnc" }
+            { Job.Dancer, "dnc" },
+            { Job.Warrior, "war" }
         };
 
         public override bool Check(IGameContext context)
@@ -66,22 +67,6 @@ namespace EasyFarm.States
             return false;
         }
 
-        public override void Enter(IGameContext context)
-        {
-            // We reset this here so it only gets reset if we actually make it back to town.
-            //BattleState.KillCount = 0;
-
-            //var persister = new Persister();
-            //var fileName = $"town.eup";
-            //if (string.IsNullOrWhiteSpace(fileName)) return;
-            //if (!File.Exists(fileName)) return;
-            //var config = persister.Deserialize<Config>(fileName);
-            //Config.Instance = config;
-            //AppServices.SendConfigLoaded();
-
-            //config.Route.Waypoints.Clear();
-        }
-
         public override void Run(IGameContext context)
         {
             if(context.Zone == Zone.Port_Windurst)
@@ -90,8 +75,11 @@ namespace EasyFarm.States
 
                 if (context.API.Player.Position.Distance(portHPPosition) <= 3)
                 {
-                    context.API.Windower.SendString("//sw cancel");
+                    context.API.Navigator.Reset();
+                    context.API.Windower.SendKeyPress(Keys.ESCAPE);
                     Thread.Sleep(2000);
+                    context.API.Windower.SendString("//sw cancel");
+                    Thread.Sleep(3000);
                     context.API.Windower.SendString("//hp norg 2");
                     Thread.Sleep(5000);
                 }
@@ -110,6 +98,7 @@ namespace EasyFarm.States
                             context.API.Windower.SendString($"//jc main {jobStrings[meritJob.Item1]}");
                             Thread.Sleep(3000);
                             context.API.Windower.SendString($"//jc sub {jobStrings[meritJob.Item2]}");
+                            Thread.Sleep(3000);
                         }
                     }
                 }
@@ -124,6 +113,7 @@ namespace EasyFarm.States
                             context.API.Windower.SendString($"//jc main {jobStrings[shinJob.Item1]}");
                             Thread.Sleep(3000);
                             context.API.Windower.SendString($"//jc sub {jobStrings[shinJob.Item2]}");
+                            Thread.Sleep(3000);
                         }
                     }
                 }

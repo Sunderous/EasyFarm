@@ -60,7 +60,22 @@ namespace EasyFarm.States
             var lastTarget = context.Target;
 
             // Set our new target at the end so that we don't accidentally cast on a new target.
-            var target = mobs.FirstOrDefault() ?? new NullUnit();
+            var target = mobs.FirstOrDefault(mob => {
+                if((mob.HasAggroed && !context.Config.AggroFilter) || mob.PartyClaim && !context.Config.PartyFilter)
+                {
+                    return false;
+                }
+                if(mob.IsClaimed && !mob.MyClaim && !context.Config.ClaimedFilter)
+                {
+                    return false;
+                }
+                if(!mob.IsClaimed && !context.Config.UnclaimedFilter)
+                {
+                    return false;
+                }
+
+                return true;
+            }) ?? new NullUnit();
 
             if (target.IsValid)
             {

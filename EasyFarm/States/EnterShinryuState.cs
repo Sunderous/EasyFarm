@@ -72,7 +72,7 @@ namespace EasyFarm.States
         //    if (!context.API.Player.HasKeyItem(3261))
         //    {
         //        var persister = new Persister();
-        //        var fileName = $"shinryu.eup";
+        //        var fileName = $"shinryu_easy.eup";
         //        if (string.IsNullOrWhiteSpace(fileName)) return;
         //        if (!File.Exists(fileName)) return;
         //        var config = persister.Deserialize<Config>(fileName);
@@ -80,7 +80,7 @@ namespace EasyFarm.States
         //        AppServices.SendConfigLoaded();
 
         //        Config.Instance.Route.Waypoints.Clear();
-        //    }        
+        //    }
         //}
     }
 }

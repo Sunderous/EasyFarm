@@ -34,7 +34,7 @@ namespace EasyFarm.States
         {
             // If we aren't in the paradox.
             if (context.Zone != Zone.Reisenjima && context.Zone != Zone.Abyssea_Empyreal_Paradox)
-                return false; 
+                return false;
 
             // If we're still fighting.
             if (context.IsFighting)
@@ -50,9 +50,11 @@ namespace EasyFarm.States
 
                 //return context.API.Player.Status.Equals(Status.Standing) && context.API.Player.MeritCount() >= 30;
 
+                //var meritCount = context.API.Player.MeritCount();
+
                 // TODO: This kill count is a hack, but the API is currently broken so we can't read our Merit count
                 // to determine when to warp back. So we approximate it with this, will fix when API is fixed.
-                return context.API.Player.Status.Equals(Status.Standing) && BattleState.KillCount >= 26;
+                return context.API.Player.Status.Equals(Status.Standing) && context.API.Player.MeritCount() >= 30;
             }
             else
             {
@@ -68,14 +70,23 @@ namespace EasyFarm.States
 
         public override void Run(IGameContext context)
         {
-            context.API.Navigator.CancelFollow();
+            Thread.Sleep(2000);
+
+            context.API.Navigator.CancelFollow();       
 
             // Equip the teleport ring, wait 10 seconds, then use it.
             context.API.Windower.SendString("/equip ring2 \"Warp Ring\"");
-            
-            Thread.Sleep(10000);
+
+            Thread.Sleep(12000);
+
+            if(context.API.Player.HasKeyItem(3261))
+            {
+                return;
+            }
 
             context.API.Windower.SendString("/item \"Warp Ring\" <me>");
+
+            Thread.Sleep(15000);
         }
     }
 }

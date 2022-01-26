@@ -26,9 +26,9 @@ namespace EasyFarm.Classes
         {
             return units
                 .Where(x => x.IsValid)
-                .OrderByDescending(x => x.PartyClaim)
+                .OrderBy(x => x.Distance)
                 .ThenByDescending(x => x.HasAggroed)
-                .ThenBy(x => x.Distance);
+                .ThenByDescending(x => x.PartyClaim);
         }
     }
 }
