@@ -44,7 +44,6 @@ namespace EasyFarm.States
             _context = new GameContext(fface);
 
             //Create the states
-            //AddState(new MeritTrustsState() { Priority = 9 });
             AddState(new FarmMeritsState() { Priority = 9 });
             AddState(new ChangeJobsState() { Priority = 9 });
             AddState(new FightShinryuState() { Priority = 8 });
