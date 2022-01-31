@@ -225,7 +225,6 @@
     </Compile>
     <Compile Include="Classes\NullUnit.cs" />
     <Compile Include="States\ChangeJobsState.cs" />
-    <Compile Include="States\MeritTrustsState.cs" />
     <Compile Include="States\FarmMeritsState.cs" />
     <Compile Include="States\FightShinryuState.cs" />
     <Compile Include="States\WarpToQufimState.cs" />
@@ -360,6 +359,23 @@
   </ItemGroup>
   <ItemGroup>
     <AppDesigner Include="Properties\" />
+    <None Include="Addons\htmb\htmb.lua" />
+    <None Include="Addons\sparks\map.lua" />
+    <None Include="Addons\sparks\sparks.lua" />
+    <None Include="Addons\superwarp\fuzzyfind.lua" />
+    <None Include="Addons\superwarp\map\abyssea.lua" />
+    <None Include="Addons\superwarp\map\escha.lua" />
+    <None Include="Addons\superwarp\map\guides.lua" />
+    <None Include="Addons\superwarp\map\homepoints.lua" />
+    <None Include="Addons\superwarp\map\maps.lua" />
+    <None Include="Addons\superwarp\map\portals.lua" />
+    <None Include="Addons\superwarp\map\protowaypoints.lua" />
+    <None Include="Addons\superwarp\map\unity.lua" />
+    <None Include="Addons\superwarp\map\voidwatch.lua" />
+    <None Include="Addons\superwarp\map\waypoints.lua" />
+    <None Include="Addons\superwarp\README.md" />
+    <None Include="Addons\superwarp\sendall.lua" />
+    <None Include="Addons\superwarp\superwarp.lua" />
     <None Include="app.config" />
     <None Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -478,6 +494,10 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Settings\ingress_3.eup" />
+    <None Include="Settings\reisen_frogs.ewl" />
+    <None Include="Settings\shinryu_easy.eup" />
+    <None Include="Settings\town.eup" />
     <None Include="trayicon.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -487,6 +507,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Addons\superwarp\.gitignore" />
+    <Resource Include="Addons\superwarp\data\settings.xml" />
     <Content Include="Dependencies\EliteAPI.dll" />
     <Content Include="Dependencies\EliteMMO.API.dll" />
   </ItemGroup>
