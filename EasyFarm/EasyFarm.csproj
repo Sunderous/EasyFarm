@@ -359,24 +359,31 @@
   </ItemGroup>
   <ItemGroup>
     <AppDesigner Include="Properties\" />
-    <None Include="Addons\htmb\htmb.lua" />
-    <None Include="Addons\sparks\map.lua" />
-    <None Include="Addons\sparks\sparks.lua" />
-    <None Include="Addons\superwarp\fuzzyfind.lua" />
-    <None Include="Addons\superwarp\map\abyssea.lua" />
-    <None Include="Addons\superwarp\map\escha.lua" />
-    <None Include="Addons\superwarp\map\guides.lua" />
-    <None Include="Addons\superwarp\map\homepoints.lua" />
-    <None Include="Addons\superwarp\map\maps.lua" />
-    <None Include="Addons\superwarp\map\portals.lua" />
-    <None Include="Addons\superwarp\map\protowaypoints.lua" />
-    <None Include="Addons\superwarp\map\unity.lua" />
-    <None Include="Addons\superwarp\map\voidwatch.lua" />
-    <None Include="Addons\superwarp\map\waypoints.lua" />
-    <None Include="Addons\superwarp\README.md" />
-    <None Include="Addons\superwarp\sendall.lua" />
-    <None Include="Addons\superwarp\superwarp.lua" />
     <None Include="app.config" />
+    <None Include="Dependencies\addons\htmb\htmb.lua" />
+    <None Include="Dependencies\addons\sparks\map.lua" />
+    <None Include="Dependencies\addons\sparks\sparks.lua" />
+    <None Include="Dependencies\addons\superwarp\fuzzyfind.lua" />
+    <None Include="Dependencies\addons\superwarp\map\abyssea.lua" />
+    <None Include="Dependencies\addons\superwarp\map\escha.lua" />
+    <None Include="Dependencies\addons\superwarp\map\guides.lua" />
+    <None Include="Dependencies\addons\superwarp\map\homepoints.lua" />
+    <None Include="Dependencies\addons\superwarp\map\maps.lua" />
+    <None Include="Dependencies\addons\superwarp\map\portals.lua" />
+    <None Include="Dependencies\addons\superwarp\map\protowaypoints.lua" />
+    <None Include="Dependencies\addons\superwarp\map\unity.lua" />
+    <None Include="Dependencies\addons\superwarp\map\voidwatch.lua" />
+    <None Include="Dependencies\addons\superwarp\map\waypoints.lua" />
+    <None Include="Dependencies\addons\superwarp\README.md" />
+    <None Include="Dependencies\addons\superwarp\sendall.lua" />
+    <None Include="Dependencies\addons\superwarp\superwarp.lua" />
+    <None Include="Dependencies\navmeshes\Abyssea_Empyreal_Paradox.snb" />
+    <None Include="Dependencies\navmeshes\Escha_RuAun.snb" />
+    <None Include="Dependencies\navmeshes\Reisenjima.snb" />
+    <None Include="Dependencies\settings\ingress_3.eup" />
+    <None Include="Dependencies\settings\reisen_frogs.ewl" />
+    <None Include="Dependencies\settings\shinryu_easy.eup" />
+    <None Include="Dependencies\settings\town.eup" />
     <None Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -494,10 +501,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Settings\ingress_3.eup" />
-    <None Include="Settings\reisen_frogs.ewl" />
-    <None Include="Settings\shinryu_easy.eup" />
-    <None Include="Settings\town.eup" />
     <None Include="trayicon.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -507,8 +510,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Addons\superwarp\.gitignore" />
-    <Resource Include="Addons\superwarp\data\settings.xml" />
+    <Content Include="Dependencies\addons\superwarp\.gitignore" />
+    <Resource Include="Dependencies\addons\superwarp\data\settings.xml" />
     <Content Include="Dependencies\EliteAPI.dll" />
     <Content Include="Dependencies\EliteMMO.API.dll" />
   </ItemGroup>
