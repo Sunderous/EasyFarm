@@ -511,7 +511,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Dependencies\addons\superwarp\.gitignore" />
-    <Resource Include="Dependencies\addons\superwarp\data\settings.xml" />
     <Content Include="Dependencies\EliteAPI.dll" />
     <Content Include="Dependencies\EliteMMO.API.dll" />
   </ItemGroup>
